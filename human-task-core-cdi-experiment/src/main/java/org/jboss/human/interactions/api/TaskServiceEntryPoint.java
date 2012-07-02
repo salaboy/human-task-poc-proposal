@@ -12,22 +12,23 @@ import org.jboss.human.interactions.internals.annotations.Local;
  * @author salaboy
  */
 public class TaskServiceEntryPoint {
-    @Inject @Local
-    private TaskDefService taskDefService;
-    
-    @Inject @Local
-    private TaskInstanceService taskInstanceService;
 
-    @Inject @Local
+    @Inject
+    @Local
+    private TaskDefService taskDefService;
+    @Inject
+    @Local
+    private TaskInstanceService taskInstanceService;
+    @Inject
+    @Local
     private TaskIdentityService taskIdentityService;
-    
-    @Inject @Local
+    @Inject
+    @Local
     private TaskAdminService taskAdminService;
-    
-    @Inject @Local
+    @Inject
+    @Local
     private TaskQueryService taskQueryService;
-    
-    
+
     public TaskServiceEntryPoint() {
     }
 
@@ -50,6 +51,4 @@ public class TaskServiceEntryPoint {
     public TaskQueryService getTaskQueryService() {
         return taskQueryService;
     }
-    
-    
 }

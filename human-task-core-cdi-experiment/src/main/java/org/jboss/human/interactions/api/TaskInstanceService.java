@@ -13,39 +13,39 @@ import org.jboss.human.interactions.model.FaultData;
  * @author salaboy
  */
 public interface TaskInstanceService {
-    
+
     /**
      * LIFECYCLE METHODS
-     * 
+     *
      */
-    
     long newTask(String name, Map<String, Object> params);
-    
+
     void activate(long taskId, String userId);
 
     void claim(long taskId, String userId);
 
     void claim(long taskId, String userId, List<String> groupIds);
-    
+
     void claimNextAvailable(String userId, String language);
-    
+
     void claimNextAvailable(String userId, List<String> groupIds, String language);
     // We can force a map here.. a task with a single return type which cannot be encapsulated
     // in a map doesn't sounds as a valid option
+
     void complete(long taskId, String userId, Map<String, Object> data);
-    
+
     void delegate(long taskId, String userId, String targetUserId);
 
     void deleteFault(long taskId, String userId);
 
     void deleteOutput(long taskId, String userId);
-    
+
     void exit(long taskId, String userId);
 
     void fail(long taskId, String userId, FaultData faultData);
 
     void forward(long taskId, String userId, String targetEntityId);
-    
+
     void release(long taskId, String userId);
 
     void remove(long taskId, String userId);
@@ -65,5 +65,4 @@ public interface TaskInstanceService {
     void stop(long taskId, String userId);
 
     void suspend(long taskId, String userId);
-    
 }

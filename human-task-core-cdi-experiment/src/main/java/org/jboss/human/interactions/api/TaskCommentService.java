@@ -12,11 +12,12 @@ import org.jboss.human.interactions.model.Comment;
  * @author salaboy
  */
 public interface TaskCommentService {
+
     long addComment(long taskId, Comment comment);
-    
+
     void deleteComment(long taskId, long commentId);
-    
+
     List<Comment> getComments(long taskId);
-    
+
     Comment getCommentById(long commentId);
 }
