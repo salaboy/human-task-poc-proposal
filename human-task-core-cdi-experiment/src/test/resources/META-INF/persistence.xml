@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="human-task-PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>org.jboss.human.interactions.model.Group</class>
+    <class>org.jboss.human.interactions.model.User</class>
+    <class>org.jboss.human.interactions.model.OrganizationalEntity</class>
+    <class>org.jboss.human.interactions.model.TaskParent</class>
+    <class>org.jboss.human.interactions.model.TaskInstance</class>
+    <class>org.jboss.human.interactions.model.TaskDef</class>
+    <class>org.jboss.human.interactions.model.PresentationElement</class>
+    <class>org.jboss.human.interactions.model.Rendering</class>
+    <class>org.jboss.human.interactions.model.CompletionBehavior</class>
+    <class>org.jboss.human.interactions.model.Delegation</class>
+    <class>org.jboss.human.interactions.model.PeopleAssignment</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <!--properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/test-model"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+    </properties-->
+    
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem"/>
+      <property name="javax.persistence.jdbc.password" value="sa"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="sasa"/>
+      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+    </properties>
+  </persistence-unit>
+  
+</persistence>
