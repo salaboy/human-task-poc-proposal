@@ -12,10 +12,10 @@ import org.jboss.human.interactions.model.PresentationElement;
  * @author salaboy
  */
 public interface TaskPresentationService {
-    
+
     long addPresentationElement(long taskId, PresentationElement element);
-    
+
     void removePresentationElement(long taskId, long elementId);
-    
+
     List<PresentationElement> getPresentationElements(long taskId);
 }

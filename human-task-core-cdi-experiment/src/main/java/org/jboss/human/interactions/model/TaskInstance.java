@@ -83,6 +83,8 @@ public class TaskInstance implements Serializable{
     
     private boolean renderingMethodExists;
     
+    private long outputId;
+    
     private boolean hasOutput;
     
     private boolean hasFault;
@@ -343,6 +345,15 @@ public class TaskInstance implements Serializable{
     public void setVersion(int version) {
         this.version = version;
     }
+
+    public long getOutputId() {
+        return outputId;
+    }
+
+    public void setOutputId(long outputId) {
+        this.outputId = outputId;
+    }
+    
     
     
 }

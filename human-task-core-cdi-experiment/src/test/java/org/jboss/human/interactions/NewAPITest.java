@@ -14,6 +14,7 @@ import org.jboss.human.interactions.api.TaskIdentityService;
 import org.jboss.human.interactions.api.TaskInstanceService;
 import org.jboss.human.interactions.api.TaskQueryService;
 import org.jboss.human.interactions.api.TaskServiceEntryPoint;
+import org.jboss.human.interactions.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jboss.human.interactions.model.OrganizationalEntity;
 import org.jboss.human.interactions.model.PeopleAssignments;
 import org.jboss.human.interactions.model.TaskDef;
@@ -62,8 +63,7 @@ public class NewAPITest {
         
         
         TaskServiceEntryPoint taskServiceEntryPoint = container.instance().select(TaskServiceEntryPoint.class).get();
-        
-        
+        TaskLifeCycleEventListener taskListener = taskServiceEntryPoint.getTaskListener();
         
         TaskIdentityService taskIdentityService = taskServiceEntryPoint.getTaskIdentityService();
         taskIdentityService.addUser(new User("salaboy"));
@@ -89,8 +89,7 @@ public class NewAPITest {
         taskDefService.getAllTaskDef("*");
         // getById
         taskDefService.getTaskDefById("myTaskDef");
-        // unregister
-        //taskDefService.undeployTaskDef("myTaskDef");
+        
 //        
 //        
 //        // Lifecycle and query methods for task instances only!!!! 
@@ -101,15 +100,31 @@ public class NewAPITest {
         long taskId = taskInstanceService.newTask("myTaskDef", params);
         
         taskInstanceService.start(taskId, "salaboy");
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put("key1", "value1");
+        output.put("key2", 2);
+        taskInstanceService.complete(taskId, "salaboy", output);
+        
         TaskQueryService taskQueryService = taskServiceEntryPoint.getTaskQueryService();
         
         TaskAdminService taskAdminService = taskServiceEntryPoint.getTaskAdminService();
         
         List<TaskSummary> tasksOwned = taskQueryService.getTasksOwned("salaboy");
         
-//        taskAdminService.removeTasks(tasksOwned);
-//        
-//        taskIdentityService.removeUser("salaboy");
+        assertEquals(1, tasksOwned.size());
+        
+        long outputId = taskQueryService.getTaskInstanceById(taskId).getOutputId();
+        assertNotNull(outputId);
+        
+        assertNotNull(taskQueryService.getContentById(outputId));
+        
+        //Clean up
+        taskAdminService.removeTasks(tasksOwned);
+//        //Clean up
+        taskIdentityService.removeUser("salaboy");
+        
+        // unregister
+        taskDefService.undeployTaskDef("myTaskDef");
         
         // Granular services will help us to have fine grained control over the configurations and different implementations
         //  for a CMR integration this is vital

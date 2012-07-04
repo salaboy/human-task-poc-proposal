@@ -5,12 +5,16 @@
 package org.jboss.human.interactions.api;
 
 import javax.inject.Inject;
+import org.jboss.human.interactions.internals.annotations.External;
+import org.jboss.human.interactions.internals.annotations.JPA;
 import org.jboss.human.interactions.internals.annotations.Local;
+import org.jboss.human.interactions.lifecycle.listeners.TaskLifeCycleEventListener;
 
 /**
  *
  * @author salaboy
  */
+
 public class TaskServiceEntryPoint {
 
     @Inject
@@ -29,6 +33,11 @@ public class TaskServiceEntryPoint {
     @Local
     private TaskQueryService taskQueryService;
 
+    @Inject
+    @JPA
+    @External
+    private TaskLifeCycleEventListener taskListener;
+    
     public TaskServiceEntryPoint() {
     }
 
@@ -51,4 +60,10 @@ public class TaskServiceEntryPoint {
     public TaskQueryService getTaskQueryService() {
         return taskQueryService;
     }
+
+    public TaskLifeCycleEventListener getTaskListener() {
+        return taskListener;
+    }
+    
+    
 }

@@ -5,6 +5,7 @@
 package org.jboss.human.interactions.api;
 
 import java.util.List;
+import org.jboss.human.interactions.model.Content;
 import org.jboss.human.interactions.model.Group;
 import org.jboss.human.interactions.model.OrganizationalEntity;
 import org.jboss.human.interactions.model.Status;
@@ -47,7 +48,9 @@ public interface TaskQueryService {
     List<TaskSummary> getSubTasksByParent(long parentId);
 
     TaskInstance getTaskInstanceById(long taskId);
+    
+    Content getContentById(long contentId);
+    
     //I don't like this one.. it should be Parent Id 
-
     TaskInstance getTaskByWorkItemId(long workItemId);
 }

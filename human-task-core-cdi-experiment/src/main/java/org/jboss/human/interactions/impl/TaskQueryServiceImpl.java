@@ -11,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskQueryService;
 import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
+import org.jboss.human.interactions.model.Content;
 import org.jboss.human.interactions.model.Status;
 import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskSummary;
@@ -76,6 +77,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 + "where\n"
                 + "    t.actualOwner.id = :userId and\n"
                 + "    t.expirationTime is null").setParameter("userId", userId).getResultList();
+        em.close();
         return taskOwned;
         
     }
@@ -103,11 +105,19 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     public TaskInstance getTaskInstanceById(long taskId) {
         EntityManager em = emf.createEntityManager();
         TaskInstance taskInstance = (TaskInstance) em.createQuery("select ti from TaskInstance ti where ti.id = :id").setParameter("id", taskId).getSingleResult();
+        em.close();
         return taskInstance;
         
     }
     
     public TaskInstance getTaskByWorkItemId(long workItemId) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Content getContentById(long contentId) {
+        EntityManager em = emf.createEntityManager();
+        Content content = em.find(Content.class, contentId);
+        em.close();
+        return content;
     }
 }
