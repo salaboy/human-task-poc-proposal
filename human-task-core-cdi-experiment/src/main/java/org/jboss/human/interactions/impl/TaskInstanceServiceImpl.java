@@ -9,11 +9,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskDefService;
 import org.jboss.human.interactions.api.TaskInstanceService;
 import org.jboss.human.interactions.impl.factories.TaskInstanceFactory;
-import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.internals.lifecycle.LifecycleManager;
 import org.jboss.human.interactions.internals.lifecycle.Mvel;
@@ -22,6 +20,7 @@ import org.jboss.human.interactions.model.Operation;
 import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskDef;
 import org.jboss.human.interactions.model.TaskSummary;
+import org.jboss.seam.transaction.Transactional;
 
 /**
  *
@@ -29,6 +28,7 @@ import org.jboss.human.interactions.model.TaskSummary;
  */
 
 @Local
+@Transactional
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     @Inject @Local
@@ -37,8 +37,8 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     @Inject @Mvel
     private LifecycleManager lifeCycleManager;
     
-    @Inject @TaskDatabase 
-    private EntityManagerFactory emf;
+    @Inject 
+    private EntityManager em;
     
     
     public TaskInstanceServiceImpl() {
@@ -49,12 +49,12 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     public long newTask(String name, Map<String, Object> params) {
         TaskDef taskDef = taskDefService.getTaskDefById(name);
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
+        
+        //em.getTransaction().begin();
         TaskInstance task = TaskInstanceFactory.newTaskInstance(taskDef);
         em.persist(task);
-        em.getTransaction().commit();
-        em.close();
+        //em.getTransaction().commit();
+        
         return task.getId();
         
     }

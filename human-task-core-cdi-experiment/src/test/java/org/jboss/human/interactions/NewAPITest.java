@@ -85,10 +85,15 @@ public class NewAPITest {
         taskDef.setPeopleAssignments(peopleAssignments);
         //From the spec: register, port == taskdefid 
         taskDefService.deployTaskDef(taskDef);
-        // list
-        taskDefService.getAllTaskDef("*");
+        
         // getById
-        taskDefService.getTaskDefById("myTaskDef");
+        TaskDef taskDefById = taskDefService.getTaskDefById("myTaskDef");
+        assertNotNull(taskDefById);
+        
+        // list
+        List<TaskDef> allTaskDef = taskDefService.getAllTaskDef("*");
+        assertEquals(1, allTaskDef.size());
+        
         
 //        
 //        

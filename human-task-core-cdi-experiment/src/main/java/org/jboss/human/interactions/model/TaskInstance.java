@@ -8,6 +8,7 @@ package org.jboss.human.interactions.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,22 +40,22 @@ public class TaskInstance implements Serializable{
     
     private Status status;
     
-    @ManyToOne
+    @ManyToOne(cascade= CascadeType.ALL)
     private User taskInstantiator;
     
-    @ManyToOne
+    @ManyToOne(cascade= CascadeType.ALL)
     private User actualOwner;
     
     @Temporal(TemporalType.DATE)
     private Date createdTime;
     
-    @ManyToOne
+    @ManyToOne(cascade= CascadeType.ALL)
     private User createdBy;
     
     @Temporal(TemporalType.DATE)
     private Date lastModifiedTime;
     
-    @ManyToOne
+    @ManyToOne(cascade= CascadeType.ALL)
     private User lastModifiedBy;
     
     @Temporal(TemporalType.DATE)

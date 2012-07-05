@@ -4,19 +4,21 @@
  */
 package org.jboss.human.interactions.internals;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
+import org.jboss.solder.core.ExtensionManaged;
 
 /**
  *
  * @author salaboy
  */
 public class TaskDatabaseProducer {
-    
-   @Produces @TaskDatabase
-   static EntityManagerFactory taskEmf = Persistence.createEntityManagerFactory("human-task-PU");
 
-
+    @ExtensionManaged
+    @Produces
+    @PersistenceUnit(unitName = "human-task-PU")
+    @ApplicationScoped
+    EntityManagerFactory taskEmf;
 }

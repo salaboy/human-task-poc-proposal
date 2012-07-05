@@ -11,10 +11,17 @@
     <url>http://maven.apache.org</url>
     <repositories>
         <repository>
+            <id>jboss-repo</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <url>http://repo1.maven.org/maven2/</url>
+            <id>central</id>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
             <id>eclipselink</id>
-            <layout>default</layout>
-            <name>Repository for library Library[eclipselink]</name>
         </repository>
     </repositories>
     <properties>
@@ -26,41 +33,41 @@
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
-            <version>2.0.0.Alpha2</version>
+            <version>1.1.8.Final</version>
+           
         </dependency>
         
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.6.6</version>
-        </dependency>
         
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.0.3</version>
-        </dependency>
+        
+       
         
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.0.Final</version>
+            <version>1.0.1.Final</version>
         </dependency>
         
-         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>2.3.2</version>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.1.4.Final</version>
+            
         </dependency>
         
-         <dependency>
-             <groupId>mysql</groupId>
-             <artifactId>mysql-connector-java</artifactId>
-             <version>5.1.20</version>
-             <scope>test</scope>
-         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.1.4.Final</version>
+        </dependency>
         
-       <dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.20</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.167</version>
@@ -80,6 +87,66 @@
             <version>5.5.0-SNAPSHOT</version>
         </dependency-->
         
+        
+        <dependency>
+            <groupId>org.jboss.seam.persistence</groupId>
+            <artifactId>seam-persistence</artifactId>
+            <version>3.1.0.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.solder</groupId>
+                    <artifactId>solder-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                    <groupId>org.jboss.spec.javax.servlet</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>solder-api</artifactId>
+                    <groupId>org.jboss.solder</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        
+
+       
+        
+        <dependency>
+
+            <groupId>org.jboss.seam.config</groupId>
+
+            <artifactId>seam-config-xml</artifactId>
+
+            <version>3.1.0.Beta2</version>
+
+            
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.seam.solder</groupId>
+                    <artifactId>seam-solder-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.seam.solder</groupId>
+                    <artifactId>seam-solder</artifactId>
+                </exclusion>
+                
+                
+            </exclusions>
+        </dependency>
+
+        <dependency>
+
+            <groupId>org.jboss.solder</groupId>
+
+            <artifactId>solder-impl</artifactId>
+
+            <version>3.1.1.Final</version>
+            
+        </dependency>
+        
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -92,5 +159,9 @@
             <version>2.1.0.drools16</version>
             <type>jar</type>
         </dependency>
+        
     </dependencies>
+   
+    
+    
 </project>

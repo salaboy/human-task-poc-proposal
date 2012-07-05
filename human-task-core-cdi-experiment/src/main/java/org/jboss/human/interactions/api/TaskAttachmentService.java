@@ -16,8 +16,8 @@ public interface TaskAttachmentService {
     long addAttachment(long taskId, Attachment attachment);
 
     void deleteAttachment(long taskId, long attachmentId);
-    
+
     List<Attachment> getAttachments(long taskId);
-    
+
     Attachment getAttachmentById(long attachId);
 }

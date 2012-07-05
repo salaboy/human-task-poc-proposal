@@ -8,22 +8,22 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskAdminService;
-import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskSummary;
+import org.jboss.seam.transaction.Transactional;
 
 /**
  *
  * @author salaboy
  */
 @Local
+@Transactional
 public class TaskAdminServiceImpl implements TaskAdminService{
 
-    @Inject @TaskDatabase 
-    private EntityManagerFactory emf;
+    @Inject 
+    private EntityManager em;
 
     public TaskAdminServiceImpl() {
     }
@@ -58,15 +58,15 @@ public class TaskAdminServiceImpl implements TaskAdminService{
     }
 
     public int removeTasks(List<TaskSummary> tasks) {
-        EntityManager em = emf.createEntityManager();
+        
         int count = 0;
-        em.getTransaction().begin();
+        
         for(TaskSummary taskSummary : tasks){
             TaskInstance task = em.find(TaskInstance.class, taskSummary.getTaskId());
             em.remove(task);
             count++;
         }
-        em.getTransaction().commit();
+        
         return count;
     }
     

@@ -7,25 +7,25 @@ package org.jboss.human.interactions.impl;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskQueryService;
-import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.model.Content;
 import org.jboss.human.interactions.model.Status;
 import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskSummary;
+import org.jboss.seam.transaction.Transactional;
+
 
 /**
  *
  * @author salaboy
  */
 @Local
+@Transactional
 public class TaskQueryServiceImpl implements TaskQueryService {
     
-    @Inject
-    @TaskDatabase    
-    private EntityManagerFactory emf;
+    @Inject 
+    private EntityManager em;
     
     public TaskQueryServiceImpl() {
     }
@@ -63,21 +63,20 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
     
     public List<TaskSummary> getTasksOwned(String userId) {
-        EntityManager em = emf.createEntityManager();
+        
         List<TaskSummary> taskOwned = em.createQuery("select"
                 + "    new org.jboss.human.interactions.model.TaskSummary(\n"
                 + "    t.id,\n"
                 + "    t.status,\n"
                 + "    t.skipable,\n"
                 + "    t.actualOwner,\n"
-                + "    t.createdBy,\n"
                 + "    t.createdTime)\n"
                 + "from\n"
                 + "    TaskInstance t \n"
                 + "where\n"
                 + "    t.actualOwner.id = :userId and\n"
                 + "    t.expirationTime is null").setParameter("userId", userId).getResultList();
-        em.close();
+        
         return taskOwned;
         
     }
@@ -103,9 +102,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
     
     public TaskInstance getTaskInstanceById(long taskId) {
-        EntityManager em = emf.createEntityManager();
-        TaskInstance taskInstance = (TaskInstance) em.createQuery("select ti from TaskInstance ti where ti.id = :id").setParameter("id", taskId).getSingleResult();
-        em.close();
+        TaskInstance taskInstance = em.find(TaskInstance.class, taskId);
         return taskInstance;
         
     }
@@ -115,9 +112,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
 
     public Content getContentById(long contentId) {
-        EntityManager em = emf.createEntityManager();
+        
         Content content = em.find(Content.class, contentId);
-        em.close();
+        
         return content;
     }
 }

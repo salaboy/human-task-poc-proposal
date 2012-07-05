@@ -4,6 +4,7 @@
  */
 package org.jboss.human.interactions.model;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,9 +14,11 @@ import javax.persistence.Id;
  * @author salaboy
  */
 @Entity
-public class CompletionBehavior {
+public class CompletionBehavior implements Serializable {
 
     @Id
     @GeneratedValue
     private long id;
+    
+    
 }

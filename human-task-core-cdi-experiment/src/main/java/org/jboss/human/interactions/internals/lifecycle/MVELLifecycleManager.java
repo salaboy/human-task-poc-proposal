@@ -18,7 +18,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskDefService;
 import org.jboss.human.interactions.api.TaskIdentityService;
 import org.mvel2.MVEL;
@@ -31,7 +30,6 @@ import org.jboss.human.interactions.events.BeforeTaskClaimedEvent;
 import org.jboss.human.interactions.events.BeforeTaskCompletedEvent;
 import org.jboss.human.interactions.events.BeforeTaskFailedEvent;
 import org.jboss.human.interactions.events.BeforeTaskSkippedEvent;
-import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.internals.exceptions.PermissionDeniedException;
 import org.jboss.human.interactions.internals.exceptions.TaskException;
@@ -52,8 +50,10 @@ import org.jboss.human.interactions.model.User;
 @Mvel
 public class MVELLifecycleManager implements LifecycleManager {
 //    private @Inject @Logger Log logger;
+
     @Inject
-    private @TaskDatabase EntityManagerFactory emf;
+    private EntityManager em;
+    
     private TaskDefService taskDefService;
     private TaskQueryService taskQueryService;
     private TaskIdentityService taskIdentityService;
@@ -186,11 +186,8 @@ public class MVELLifecycleManager implements LifecycleManager {
             final OrganizationalEntity targetEntity) {
 
         TaskDef taskDef = taskDefService.getTaskDefById(task.getTaskType());
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        
-        
-        
+
+
         if (command.getNewStatus() != null) {
             task.setStatus(command.getNewStatus());
         } else if (command.isSetToPreviousStatus()) {
@@ -228,9 +225,7 @@ public class MVELLifecycleManager implements LifecycleManager {
                 }
             }
         }
-        em.merge(task);
-        em.getTransaction().commit();
-        em.close();
+
     }
 
     public void taskOperation(final Operation operation, final long taskId, final String userId,
@@ -244,17 +239,19 @@ public class MVELLifecycleManager implements LifecycleManager {
 //            targetEntity = getEntity(OrganizationalEntity.class, targetEntityId);
 //        }
 
-        TaskInstance task = taskQueryService.getTaskInstanceById(taskId);
-        User user = taskIdentityService.getUserById(userId);
 
 //        boolean transactionOwner = false;
         try {
             final List<OperationCommand> commands = operations.get(operation);
 
             // transactionOwner = tpm.beginTransaction();
-            
-            
-            
+           
+
+            TaskInstance task = taskQueryService.getTaskInstanceById(taskId);
+            //TaskInstance task = em.find(TaskInstance.class, taskId);
+            User user = taskIdentityService.getUserById(userId);
+
+
             switch (operation) {
                 case Claim: {
 //                    taskClaimOperation(task);
@@ -265,8 +262,8 @@ public class MVELLifecycleManager implements LifecycleManager {
                 }
                 case Complete: {
 //                    taskCompleteOperation(task, data);
-                    
-                    
+
+
                     taskInstanceEvents.select(new AnnotationLiteral<BeforeTaskCompletedEvent>() {
                     }).fire(task);
                     break;
@@ -320,26 +317,24 @@ public class MVELLifecycleManager implements LifecycleManager {
                 case Complete: {
 
                     if (data != null) {
-                        
-                        
-                        
+
+
+
                         Content content = new Content();
                         content.setContent(data.toString().getBytes());
-                        EntityManager em = emf.createEntityManager();
-                        em.getTransaction().begin();
+
+
                         em.persist(content);
-                        em.getTransaction().commit();
-                        
-                        
-                        em.getTransaction().begin();
-                        task = em.find(TaskInstance.class, task.getId());
-                        
+
+
+                        //THIS SHOULD BE AVAILABLE BECAUSE OF THE EXTENDED PERSISTENCE CONTEXT
+                        // PROVIDED BY SEAM PERSISTENCE
                         task.setHasOutput(true);
                         task.setOutputId(content.getId());
-                        em.getTransaction().commit();
-                        em.close();
+
+
                     }
-                    
+
                     taskInstanceEvents.select(new AnnotationLiteral<AfterTaskCompletedEvent>() {
                     }).fire(task);
                     break;
@@ -358,7 +353,7 @@ public class MVELLifecycleManager implements LifecycleManager {
                 }
             }
 
-           
+          
 //            tpm.endTransaction(transactionOwner);
 
         } catch (RuntimeException re) {

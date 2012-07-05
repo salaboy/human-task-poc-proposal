@@ -18,15 +18,14 @@ public class TaskSummary implements Serializable {
     private Status status;
     private boolean skipable;
     private User actualOwner;
-    private User createdBy;
     private Date createdTime;
 
-    public TaskSummary(Long taskId, Status status, boolean skipable, User actualOwner, User createdBy, Date createdTime) {
+    public TaskSummary(Long taskId, Status status, boolean skipable, User actualOwner, Date createdTime) {
         this.taskId = taskId;
         this.status = status;
         this.skipable = skipable;
         this.actualOwner = actualOwner;
-        this.createdBy = createdBy;
+        
         this.createdTime = createdTime;
     }
 
@@ -64,14 +63,7 @@ public class TaskSummary implements Serializable {
         this.actualOwner = actualOwner;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
+   
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -82,7 +74,7 @@ public class TaskSummary implements Serializable {
 
     @Override
     public String toString() {
-        return "TaskSummary{" + "taskId=" + taskId + ", status=" + status + ", skipable=" + skipable + ", actualOwner=" + actualOwner + ", createdBy=" + createdBy + ", createdOn=" + createdTime + '}';
+        return "TaskSummary{" + "taskId=" + taskId + ", status=" + status + ", skipable=" + skipable + ", actualOwner=" + actualOwner + ", createdOn=" + createdTime + '}';
     }
     
     

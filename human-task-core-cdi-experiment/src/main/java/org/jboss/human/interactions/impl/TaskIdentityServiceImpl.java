@@ -7,33 +7,31 @@ package org.jboss.human.interactions.impl;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.jboss.human.interactions.api.TaskIdentityService;
-import org.jboss.human.interactions.internals.TaskDatabase;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.model.Group;
 import org.jboss.human.interactions.model.User;
+import org.jboss.seam.transaction.TransactionPropagation;
+import org.jboss.seam.transaction.Transactional;
 
 /**
  *
  * @author salaboy
  */
-
 @Local
+@Transactional(TransactionPropagation.REQUIRED)
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
-    @Inject @TaskDatabase 
-    private EntityManagerFactory emf;
+    @Inject 
+    private EntityManager em;
 
     public TaskIdentityServiceImpl() {
     }
     
+    @Transactional(TransactionPropagation.REQUIRED)
     public void addUser(User user) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
         em.persist(user);
-        em.getTransaction().commit();
-        em.close();
+ 
     }
 
     public void addGroup(Group group) {
@@ -45,11 +43,9 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public void removeUser(String userId) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.remove(em.find(User.class, userId));
-        em.getTransaction().commit();
-        em.close();
+        User user = em.find(User.class, userId);
+        em.remove(user);
+
     }
 
     public List<User> getUsers() {
@@ -61,13 +57,11 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public User getUserById(String userId) {
-        EntityManager em = emf.createEntityManager();
         return em.find(User.class, userId);
     }
 
     public Group getGroupById(String groupId) {
-        EntityManager em = emf.createEntityManager();
+        
         return em.find(Group.class, groupId);
     }
-    
 }
