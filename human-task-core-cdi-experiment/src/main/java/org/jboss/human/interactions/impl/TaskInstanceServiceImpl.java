@@ -7,6 +7,7 @@ package org.jboss.human.interactions.impl;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.persistence.EntityManager;
 import org.jboss.human.interactions.api.TaskDefService;
@@ -29,6 +30,7 @@ import org.jboss.seam.transaction.Transactional;
 
 @Local
 @Transactional
+@Named
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     @Inject @Local

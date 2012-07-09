@@ -6,6 +6,7 @@ package org.jboss.human.interactions.api;
 
 import java.util.Date;
 import java.util.List;
+import javax.inject.Named;
 import org.jboss.human.interactions.model.TaskSummary;
 
 /**

@@ -1,0 +1,22 @@
+<switchyard xmlns="urn:switchyard-config:switchyard:1.0"
+            xmlns:swyd="urn:switchyard-config:switchyard:1.0">
+    <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" name="camel-service" targetNamespace="urn:switchyard-quickstart:camel-service:0.1.0">
+        <service name="TaskInstanceService" promote="GenericTaskService/TaskInstanceService"/>
+        <component name="GenericTaskService">
+            <reference name="XMLService">
+                <swyd:interface.esb inputType="java:java.lang.String"/>
+            </reference>
+        </component>
+        <component name="XMLComponent">
+            <implementation.camel xmlns="urn:switchyard-component-camel:config:1.0">
+                <route xmlns="http://camel.apache.org/schema/spring">
+                    <log message="Inside XML Camel Route"/>
+                    <log message="[message] '${body}'"/>
+                </route>
+            </implementation.camel>
+            <service name="XMLService">
+                <swyd:interface.esb inputType="java:java.lang.String"/>
+            </service>
+        </component>
+    </composite>
+</switchyard>

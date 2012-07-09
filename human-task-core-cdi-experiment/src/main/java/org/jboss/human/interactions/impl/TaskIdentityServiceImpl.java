@@ -6,6 +6,7 @@ package org.jboss.human.interactions.impl;
 
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import org.jboss.human.interactions.api.TaskIdentityService;
 import org.jboss.human.interactions.internals.annotations.Local;
@@ -20,6 +21,7 @@ import org.jboss.seam.transaction.Transactional;
  */
 @Local
 @Transactional(TransactionPropagation.REQUIRED)
+@Named
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
     @Inject 

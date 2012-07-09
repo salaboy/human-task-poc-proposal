@@ -7,6 +7,7 @@ package org.jboss.human.interactions.impl;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import org.jboss.human.interactions.api.TaskAdminService;
 import org.jboss.human.interactions.internals.annotations.Local;
@@ -20,6 +21,7 @@ import org.jboss.seam.transaction.Transactional;
  */
 @Local
 @Transactional
+@Named
 public class TaskAdminServiceImpl implements TaskAdminService{
 
     @Inject 

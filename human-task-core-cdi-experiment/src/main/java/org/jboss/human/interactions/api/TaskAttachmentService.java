@@ -11,6 +11,7 @@ import org.jboss.human.interactions.model.Attachment;
  *
  * @author salaboy
  */
+
 public interface TaskAttachmentService {
 
     long addAttachment(long taskId, Attachment attachment);
