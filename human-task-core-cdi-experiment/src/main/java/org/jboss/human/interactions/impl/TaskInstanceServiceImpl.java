@@ -22,7 +22,6 @@ import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskDef;
 import org.jboss.human.interactions.model.TaskSummary;
 import org.jboss.seam.transaction.Transactional;
-
 /**
  *
  * @author salaboy

@@ -16,12 +16,31 @@
     <build>
         <plugins>
             <plugin>
-              <groupId>org.apache.camel</groupId>
-              <artifactId>camel-maven-plugin</artifactId>
-              <version>2.9.2</version>
-              <configuration>
-                <applicationContextUri>META-INF/spring/camel-context.xml</applicationContextUri>
-              </configuration>
+                <groupId>org.switchyard</groupId>
+                <artifactId>switchyard-plugin</artifactId>
+                <version>0.5.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                        <configuration>
+                            <scannerClassNames>
+                                <param>org.switchyard.component.bean.config.model.BeanSwitchYardScanner</param>
+                                <param>org.switchyard.transform.config.model.TransformSwitchYardScanner</param>
+                            </scannerClassNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <executable>java</executable>
+                    <classpathScope>test</classpathScope>
+                    <mainClass>org.jboss.humantaskswitchyard.HornetQClient</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -77,12 +96,38 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-        
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
-            <id>jboss</id>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <id>jboss-repo</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
         </repository>
+        <repository>
+            <url>http://repo1.maven.org/maven2/</url>
+            <id>central</id>
+            <layout>default</layout>
+        </repository>
+      
     </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-repo</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </pluginRepository>
+    </pluginRepositories>
+    
 </project>

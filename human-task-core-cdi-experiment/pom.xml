@@ -92,11 +92,7 @@
             <version>5.1.20</version>
             <scope>test</scope>
         </dependency>
-        
-        
-       
-        
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -109,7 +105,6 @@
             <version>2.1.0.drools16</version>
             <type>jar</type>
         </dependency>
-        
     </dependencies>
    
     
