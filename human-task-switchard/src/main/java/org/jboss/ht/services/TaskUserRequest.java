@@ -5,6 +5,7 @@
 package org.jboss.ht.services;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
@@ -13,12 +14,19 @@ import java.io.Serializable;
 public class TaskUserRequest implements Serializable{
     private long taskId;
     private String userId;
-
+    private Map<String, Object> data;
+    
     public TaskUserRequest(long taskId, String userId) {
         this.taskId = taskId;
         this.userId = userId;
     }
 
+    public TaskUserRequest(long taskId, String userId, Map<String, Object> data) {
+        this.taskId = taskId;
+        this.userId = userId;
+        this.data = data;
+    }
+    
     public long getTaskId() {
         return taskId;
     }
@@ -34,5 +42,15 @@ public class TaskUserRequest implements Serializable{
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, Object> data) {
+        this.data = data;
+    }
+    
+    
     
 }

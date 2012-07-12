@@ -12,5 +12,7 @@ package org.jboss.ht.services;
  */
 public interface TaskInstanceEndpoint{
     public void activate(TaskUserRequest request);
-    public void start(TaskUserRequest request);
+//    public void start(TaskUserRequest request);
+//    public void stop(TaskUserRequest request);
+//    public void complete(TaskUserRequest request);
 }

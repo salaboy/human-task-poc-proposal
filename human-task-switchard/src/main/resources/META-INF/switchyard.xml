@@ -3,18 +3,28 @@
     <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" name="camel-jms-binding" targetNamespace="urn:switchyard-quickstart:camel-jms-binding:0.1.0">
     
         <service name="TaskInstanceEndpoint" promote="TaskInstanceEndpoint">
+           
             <camel:binding.jms>
-                <camel:operationSelector operationName="activate"/>
+                <!--camel:operationSelector operationName="complete"/-->
                 <camel:queue>TaskInstanceEndpointQueue</camel:queue>
                 <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+                <!--camel:selector>operationName='complete'</camel:selector-->
             </camel:binding.jms>
         </service>
-        <service name="TaskInstanceEndpoint" promote="TaskInstanceEndpoint">
+        
+        <!--service name="TaskInstanceNotifications" promote="TaskInstanceNotifications"> 
             <camel:binding.jms>
-                <camel:operationSelector operationName="start"/>
-                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+                <camel:topic>TaskInstanceNotificationTopic</camel:topic>
                 <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
             </camel:binding.jms>
-        </service>
+        </service>   
+        
+        <reference name="Notifications" multiplicity="0..1" promote="Notifications">
+            <camel:binding.jms>
+                <camel:topic>TaskInstanceNotificationTopic</camel:topic>
+                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+            </camel:binding.jms>
+        </reference-->
+        
     </composite>
 </switchyard>

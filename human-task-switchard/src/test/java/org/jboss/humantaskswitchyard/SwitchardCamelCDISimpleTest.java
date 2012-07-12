@@ -6,9 +6,12 @@ package org.jboss.humantaskswitchyard;
 
 import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.naming.InitialContext;
@@ -26,8 +29,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.jboss.ht.services.TaskLifeCycleOperationEventListener;
 import org.jboss.ht.services.TaskUserRequest;
-import org.switchyard.BaseHandler;
 
 /**
  *
@@ -41,16 +44,20 @@ import org.switchyard.BaseHandler;
 public class SwitchardCamelCDISimpleTest {
 
    
-     private static final String QUEUE_NAME = "TaskInstanceEndpointQueue";
+    private static final String QUEUE_NAME = "TaskInstanceEndpointQueue";
     private SwitchYardTestKit _testKit;
+//    @Inject
+//    private CDIMixIn cdi;
     
     @Test
     public void sendTextMessageToJMSQueue() throws Exception {
         final TaskUserRequest payload = new TaskUserRequest(1, "salaboy");
         
         MockHandler mockHandler = _testKit.registerInOnlyService("TaskInstanceEndpointBean");
+        //Bean bean = cdi.getBean(TaskLifeCycleOperationEventListener.class);
         
-        sendTextToQueue(payload, QUEUE_NAME);
+        
+        sendTextToQueue(payload, "activate", QUEUE_NAME);
         // Allow for the JMS Message to be processed.
         Thread.sleep(5000);
         
@@ -61,7 +68,7 @@ public class SwitchardCamelCDISimpleTest {
         assertThat(recievedExchange.getMessage().getContent(TaskUserRequest.class).getTaskId(), is(equalTo(payload.getTaskId())));
     }
     
-    private void sendTextToQueue(final Serializable payload, final String queueName) throws Exception {
+    private void sendTextToQueue(final Serializable payload, final String operationName, final String queueName) throws Exception {
         InitialContext initialContext = null;
         Connection connection = null;
         Session session = null;
@@ -74,7 +81,10 @@ public class SwitchardCamelCDISimpleTest {
             connection.start();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             producer = session.createProducer(testQueue);
-            producer.send(session.createObjectMessage(payload));
+            ObjectMessage message = session.createObjectMessage(payload);
+            //message.setStringProperty("operationName", operationName);
+            
+            producer.send(message);
         } finally {
             if (producer != null) {
 	            producer.close();

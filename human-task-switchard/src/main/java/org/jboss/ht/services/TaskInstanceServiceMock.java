@@ -6,9 +6,12 @@ package org.jboss.ht.services;
 
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import org.jboss.ht.services.annotations.Mock;
 import org.jboss.human.interactions.api.TaskInstanceService;
+import org.jboss.human.interactions.internals.lifecycle.LifecycleManager;
 import org.jboss.human.interactions.model.FaultData;
+import org.jboss.human.interactions.model.Operation;
 
 /**
  *
@@ -16,13 +19,17 @@ import org.jboss.human.interactions.model.FaultData;
  */
 @Mock
 public class TaskInstanceServiceMock implements TaskInstanceService{
-
+    
+//    @Inject @Mock
+//    private LifecycleManager manager;
+//    
     public long newTask(String name, Map<String, Object> params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void activate(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        manager.taskOperation(Operation.Activate, 0, null, null, null, null);
+        System.out.println("-> Operation.Activate");
     }
 
     public void claim(long taskId, String userId) {
@@ -42,7 +49,8 @@ public class TaskInstanceServiceMock implements TaskInstanceService{
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        manager.taskOperation(Operation.Complete, taskId, userId, userId, null, null);
+        System.out.println("-> Operation.Complete");
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
@@ -98,11 +106,13 @@ public class TaskInstanceServiceMock implements TaskInstanceService{
     }
 
     public void start(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        manager.taskOperation(Operation.Start, taskId, userId, userId, null, null);
+        System.out.println("-> Operation.Start");
     }
 
     public void stop(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        manager.taskOperation(Operation.Stop, taskId, userId, userId, null, null);
+        System.out.println("-> Operation.Stop");
     }
 
     public void suspend(long taskId, String userId) {

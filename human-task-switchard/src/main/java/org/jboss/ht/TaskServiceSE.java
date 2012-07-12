@@ -10,6 +10,11 @@ import org.jboss.weld.environment.se.WeldContainer;
 /**
  *
  * @author salaboy
+ * Two options for bootstraping SY
+ * CDI https://github.com/jboss-switchyard/core/blob/master/deploy/cdi/src/main/java/org/switchyard/deploy/cdi/SwitchYardCDIDeployer.java
+ * 
+ * Instatiation: https://github.com/jboss-switchyard/core/blob/master/deploy/base/src/main/java/org/switchyard/SwitchYard.java
+ * 
  */
 public class TaskServiceSE {
 
