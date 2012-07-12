@@ -5,10 +5,28 @@
         <service name="TaskInstanceEndpoint" promote="TaskInstanceEndpoint">
            
             <camel:binding.jms>
-                <!--camel:operationSelector operationName="complete"/-->
+                <camel:operationSelector operationName="complete"/>
                 <camel:queue>TaskInstanceEndpointQueue</camel:queue>
                 <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-                <!--camel:selector>operationName='complete'</camel:selector-->
+                <camel:selector>operationName='complete'</camel:selector>
+            </camel:binding.jms>
+            <camel:binding.jms>
+                <camel:operationSelector operationName="activate"/>
+                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+                <camel:selector>operationName='activate'</camel:selector>
+            </camel:binding.jms>
+            <camel:binding.jms>
+                <camel:operationSelector operationName="start"/>
+                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+                <camel:selector>operationName='start'</camel:selector>
+            </camel:binding.jms>
+            <camel:binding.jms>
+                <camel:operationSelector operationName="stop"/>
+                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+                <camel:selector>operationName='stop'</camel:selector>
             </camel:binding.jms>
         </service>
         

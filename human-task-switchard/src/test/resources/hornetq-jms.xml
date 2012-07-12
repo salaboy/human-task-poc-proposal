@@ -14,8 +14,8 @@
       <entry name="TaskInstanceEndpointQueue"/>
    </queue>
    
-   <!--topic name="TaskInstanceNotificationTopic">
+   <topic name="TaskInstanceNotificationTopic">
       <entry name="TaskInstanceNotificationTopic"/>
-   </topic-->
+   </topic>
    
 </configuration>

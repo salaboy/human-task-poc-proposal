@@ -20,15 +20,15 @@ import org.jboss.human.interactions.model.Operation;
 @Mock
 public class TaskInstanceServiceMock implements TaskInstanceService{
     
-//    @Inject @Mock
-//    private LifecycleManager manager;
-//    
+    @Inject @Mock
+    private LifecycleManager manager;
+    
     public long newTask(String name, Map<String, Object> params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void activate(long taskId, String userId) {
-//        manager.taskOperation(Operation.Activate, 0, null, null, null, null);
+        manager.taskOperation(Operation.Activate, 0, null, null, null, null);
         System.out.println("-> Operation.Activate");
     }
 
@@ -49,7 +49,7 @@ public class TaskInstanceServiceMock implements TaskInstanceService{
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-//        manager.taskOperation(Operation.Complete, taskId, userId, userId, null, null);
+        manager.taskOperation(Operation.Complete, taskId, userId, userId, null, null);
         System.out.println("-> Operation.Complete");
     }
 
@@ -106,12 +106,12 @@ public class TaskInstanceServiceMock implements TaskInstanceService{
     }
 
     public void start(long taskId, String userId) {
-//        manager.taskOperation(Operation.Start, taskId, userId, userId, null, null);
+        manager.taskOperation(Operation.Start, taskId, userId, userId, null, null);
         System.out.println("-> Operation.Start");
     }
 
     public void stop(long taskId, String userId) {
-//        manager.taskOperation(Operation.Stop, taskId, userId, userId, null, null);
+        manager.taskOperation(Operation.Stop, taskId, userId, userId, null, null);
         System.out.println("-> Operation.Stop");
     }
 

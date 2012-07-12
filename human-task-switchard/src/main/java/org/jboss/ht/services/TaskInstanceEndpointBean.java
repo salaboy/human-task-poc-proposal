@@ -16,8 +16,8 @@ import org.switchyard.component.bean.Service;
  */
 @Service(TaskInstanceEndpoint.class)
 public class TaskInstanceEndpointBean implements TaskInstanceEndpoint{
-//    @Inject @Mock
-//    private TaskInstanceService taskInstanceService;
+    @Inject @Mock
+    private TaskInstanceService taskInstanceService;
 
     public TaskInstanceEndpointBean() {
         
@@ -25,21 +25,21 @@ public class TaskInstanceEndpointBean implements TaskInstanceEndpoint{
     
     public void activate(TaskUserRequest request){
         System.out.println(" XXXX ");
-    //    taskInstanceService.activate(request.getTaskId(), request.getUserId());
+        taskInstanceService.activate(request.getTaskId(), request.getUserId());
         
     }
     
-//    public void start(TaskUserRequest request){
-//    //    taskInstanceService.start(request.getTaskId(), request.getUserId());
-//    }
-//
-//    public void stop(TaskUserRequest request) {
-//    //    taskInstanceService.stop(request.getTaskId(), request.getUserId());
-//    }
-//
-//    public void complete(TaskUserRequest request) {
-//    //    taskInstanceService.complete(request.getTaskId(), request.getUserId(), request.getData());
-//    }
+    public void start(TaskUserRequest request){
+        taskInstanceService.start(request.getTaskId(), request.getUserId());
+    }
+
+    public void stop(TaskUserRequest request) {
+        taskInstanceService.stop(request.getTaskId(), request.getUserId());
+    }
+
+    public void complete(TaskUserRequest request) {
+        taskInstanceService.complete(request.getTaskId(), request.getUserId(), request.getData());
+    }
     
     
     

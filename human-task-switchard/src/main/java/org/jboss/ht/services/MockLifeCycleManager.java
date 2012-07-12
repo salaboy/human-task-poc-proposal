@@ -27,12 +27,12 @@ import org.jboss.human.interactions.model.Operation;
  */
 @Mock
 public class MockLifeCycleManager implements LifecycleManager{
-//    @Inject
-//    private Event<Operation> taskOperationEvents;
+    @Inject
+    private Event<Operation> taskOperationEvents;
     
     public void taskOperation(Operation operation, long taskId, String userId, String targetEntityId, Map<String, Object> data, List<String> groupIds) throws TaskException {
-//        taskOperationEvents.select(new AnnotationLiteral<BeforeTaskStartedEvent>() {
-//                    }).fire(operation);
+        taskOperationEvents.select(new AnnotationLiteral<BeforeTaskCompletedEvent>() {
+                    }).fire(operation);
     }
     
 }
