@@ -5,9 +5,9 @@
             <jms-queue name="TaskInstanceEndpointQueue">
                 <entry name="TaskInstanceEndpointQueue"/>
             </jms-queue>
-            <jms-queue name="TaskInstanceNotificationTopic">
-                <entry name="TaskInstanceNotificationTopic"/>
-            </jms-queue>
+            <jms-topic name="TaskNotificationTopic">
+                <entry name="TaskNotificationTopic"/>
+            </jms-topic>
         </jms-destinations>
     </hornetq-server>
 </messaging-deployment>

@@ -1,48 +1,49 @@
-<switchyard xmlns="urn:switchyard-config:switchyard:1.0"
-            xmlns:camel="urn:switchyard-component-camel:config:1.0">
-    <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" name="camel-jms-binding" targetNamespace="urn:switchyard-quickstart:camel-jms-binding:0.1.0">
-    
-        <service name="TaskInstanceEndpoint" promote="TaskInstanceEndpoint">
-           
-            <camel:binding.jms>
-                <camel:operationSelector operationName="complete"/>
-                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-                <camel:selector>operationName='complete'</camel:selector>
-            </camel:binding.jms>
-            <camel:binding.jms>
-                <camel:operationSelector operationName="activate"/>
-                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-                <camel:selector>operationName='activate'</camel:selector>
-            </camel:binding.jms>
-            <camel:binding.jms>
-                <camel:operationSelector operationName="start"/>
-                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-                <camel:selector>operationName='start'</camel:selector>
-            </camel:binding.jms>
-            <camel:binding.jms>
-                <camel:operationSelector operationName="stop"/>
-                <camel:queue>TaskInstanceEndpointQueue</camel:queue>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-                <camel:selector>operationName='stop'</camel:selector>
-            </camel:binding.jms>
-        </service>
-        
-        <!--service name="TaskInstanceNotifications" promote="TaskInstanceNotifications"> 
-            <camel:binding.jms>
-                <camel:topic>TaskInstanceNotificationTopic</camel:topic>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-            </camel:binding.jms>
-        </service>   
-        
-        <reference name="Notifications" multiplicity="0..1" promote="Notifications">
-            <camel:binding.jms>
-                <camel:topic>TaskInstanceNotificationTopic</camel:topic>
-                <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
-            </camel:binding.jms>
-        </reference-->
-        
-    </composite>
+<?xml version="1.0" encoding="UTF-8"?>
+<switchyard xmlns="urn:switchyard-config:switchyard:1.0" xmlns:bean="urn:switchyard-component-bean:config:1.0" xmlns:camel="urn:switchyard-component-camel:config:1.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+  <sca:composite name="camel-jms-binding" targetNamespace="urn:switchyard-quickstart:camel-jms-binding:0.1.0">
+    <sca:service name="TaskInstanceEndpoint" promote="TaskInstanceEndpoint/TaskInstanceEndpoint">
+      <camel:binding.jms>
+        <camel:operationSelector operationName="complete"/>
+        <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+        <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+        <camel:selector>operationName='complete'</camel:selector>
+      </camel:binding.jms>
+      <camel:binding.jms>
+        <camel:operationSelector operationName="activate"/>
+        <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+        <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+        <camel:selector>operationName='activate'</camel:selector>
+      </camel:binding.jms>
+      <camel:binding.jms>
+        <camel:operationSelector operationName="start"/>
+        <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+        <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+        <camel:selector>operationName='start'</camel:selector>
+      </camel:binding.jms>
+      <camel:binding.jms>
+        <camel:operationSelector operationName="stop"/>
+        <camel:queue>TaskInstanceEndpointQueue</camel:queue>
+        <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+        <camel:selector>operationName='stop'</camel:selector>
+      </camel:binding.jms>
+    </sca:service>
+    <sca:component name="TaskInstanceEndpoint">
+      <bean:implementation.bean class="org.jboss.ht.services.TaskInstanceEndpointBean"/>
+      <sca:service name="TaskInstanceEndpoint">
+        <sca:interface.java interface="org.jboss.ht.services.TaskInstanceEndpoint"/>
+      </sca:service>
+    </sca:component>
+    <sca:component name="TaskLifeCycleOperationEventListener">
+      <bean:implementation.bean class="org.jboss.ht.services.TaskLifeCycleOperationEventListener"/>
+      <sca:reference name="TaskInstanceNotification">
+        <sca:interface.java interface="org.jboss.ht.services.TaskInstanceNotification"/>
+      </sca:reference>
+    </sca:component>
+    <sca:reference name="TaskInstanceNotification" multiplicity="0..1" promote="TaskLifeCycleOperationEventListener/TaskInstanceNotification">
+      <camel:binding.jms>
+        <camel:topic>TaskNotificationTopic</camel:topic>
+        <camel:connectionFactory>#ConnectionFactory</camel:connectionFactory>
+      </camel:binding.jms>
+    </sca:reference>
+  </sca:composite>
 </switchyard>
