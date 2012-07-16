@@ -53,8 +53,6 @@ public class SwitchardCamelCDISimpleTest {
     public void sendTextMessageToJMSQueue() throws Exception {
         final TaskUserRequest payload = new TaskUserRequest(1, "salaboy");
 
-        // MockHandler mockHandler = _testKit.registerInOnlyService("TaskInstanceEndpoint");
-        //Bean bean = cdi.getBean(TaskLifeCycleOperationEventListener.class);
         
         MessageConsumer notificationConsumer = createNotificationConsumer(NOTIFICATION_QUEUE_NAME);
         MessageConsumer notificationConsumer2 = createNotificationConsumer(NOTIFICATION_QUEUE_NAME);
@@ -73,11 +71,7 @@ public class SwitchardCamelCDISimpleTest {
         assertEquals(((ObjectMessage)message).getObject(), ((ObjectMessage)message2).getObject());
         Thread.sleep(5000);
 
-//        final LinkedBlockingQueue<Exchange> recievedMessages = mockHandler.getMessages();
-//        assertThat(recievedMessages, is(notNullValue()));
-//        final Exchange recievedExchange = recievedMessages.iterator().next();
-//        assertThat(recievedExchange.getMessage().getContent(TaskUserRequest.class).getUserId(), is(equalTo(payload.getUserId())));
-//        assertThat(recievedExchange.getMessage().getContent(TaskUserRequest.class).getTaskId(), is(equalTo(payload.getTaskId())));
+
     }
 
     private void sendOperationToQueue(final Serializable payload, final String operationName, final String queueName) throws Exception {
