@@ -7,6 +7,7 @@ package org.jboss.human.interactions.api;
 import java.util.List;
 import java.util.Map;
 import org.jboss.human.interactions.model.FaultData;
+import org.jboss.human.interactions.model.TaskDef;
 
 /**
  *
@@ -19,6 +20,10 @@ public interface TaskInstanceService {
      *
      */
     long newTask(String name, Map<String, Object> params);
+    
+    long newTask(TaskDef def, Map<String, Object> params);
+    
+    long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
 
     void activate(long taskId, String userId);
 

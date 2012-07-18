@@ -28,8 +28,8 @@ import org.jboss.seam.transaction.Transactional;
  */
 
 @Local
-@Transactional
 @Named
+@Transactional
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     @Inject @Local
@@ -46,18 +46,31 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         
     }
 
-    
+    public TaskInstanceServiceImpl(TaskDefService taskDefService, LifeCycleManager lifeCycleManager) {
+        this.taskDefService = taskDefService;
+        this.lifeCycleManager = lifeCycleManager;
+    }
     
     public long newTask(String name, Map<String, Object> params) {
         TaskDef taskDef = taskDefService.getTaskDefById(name);
-        
-        //em.getTransaction().begin();
+
         TaskInstance task = TaskInstanceFactory.newTaskInstance(taskDef);
         em.persist(task);
-        //em.getTransaction().commit();
-        
+
         return task.getId();
         
+    }
+    public long newTask(TaskDef taskDef, Map<String, Object> params) {
+        return newTask(taskDef, params, true);
+    }
+    
+    public long newTask(TaskDef taskDef, Map<String, Object> params, boolean deploy) {
+        if(deploy){
+            taskDefService.deployTaskDef(taskDef);
+        }
+        TaskInstance task = TaskInstanceFactory.newTaskInstance(taskDef);
+        em.persist(task);
+        return task.getId();
     }
 
     public void activate(long taskInstanceId, String userId) {
@@ -195,6 +208,8 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    
     
     
 }

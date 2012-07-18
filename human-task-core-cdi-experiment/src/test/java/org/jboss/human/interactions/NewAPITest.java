@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.inject.Any;
-import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.human.interactions.api.TaskAdminService;
 import org.jboss.human.interactions.api.TaskDefService;
 import org.jboss.human.interactions.api.TaskEventsService;
@@ -18,14 +16,25 @@ import org.jboss.human.interactions.api.TaskInstanceService;
 import org.jboss.human.interactions.api.TaskQueryService;
 import org.jboss.human.interactions.api.TaskServiceEntryPoint;
 import org.jboss.human.interactions.api.TaskServiceEntryPointImpl;
+import org.jboss.human.interactions.impl.TaskAdminServiceImpl;
+import org.jboss.human.interactions.impl.TaskDefServiceImpl;
+import org.jboss.human.interactions.impl.TaskEventsServiceImpl;
+import org.jboss.human.interactions.impl.TaskIdentityServiceImpl;
+import org.jboss.human.interactions.impl.TaskInstanceServiceImpl;
+import org.jboss.human.interactions.impl.TaskQueryServiceImpl;
+import org.jboss.human.interactions.internals.lifecycle.LifeCycleManager;
+import org.jboss.human.interactions.internals.lifecycle.MVELLifeCycleManager;
+import org.jboss.human.interactions.lifecycle.listeners.InternalTaskLifeCycleEventListener;
 import org.jboss.human.interactions.lifecycle.listeners.JPATaskLifeCycleEventListener;
 import org.jboss.human.interactions.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jboss.human.interactions.model.OrganizationalEntity;
 import org.jboss.human.interactions.model.PeopleAssignments;
 import org.jboss.human.interactions.model.TaskDef;
 import org.jboss.human.interactions.model.TaskEvent;
+import org.jboss.human.interactions.model.TaskInstance;
 import org.jboss.human.interactions.model.TaskSummary;
 import org.jboss.human.interactions.model.User;
+import org.jboss.human.interactions.utils.TaskServiceModule;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
@@ -66,48 +75,46 @@ public class NewAPITest {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
         
-        TaskServiceEntryPointImpl taskServiceEntryPoint = container.instance().select(TaskServiceEntryPointImpl.class).get();
-        System.out.println(" Ambiguous = "+container.instance().select(TaskLifeCycleEventListener.class).isAmbiguous());
-        System.out.println(" Unsatisfied = "+container.instance().select(TaskLifeCycleEventListener.class).isUnsatisfied());
+        TaskServiceEntryPoint taskService = container.instance().select(TaskServiceEntryPointImpl.class).get();
+        
         TaskLifeCycleEventListener taskListener = container.instance().select(TaskLifeCycleEventListener.class).get(); 
         
         assertNotNull(taskListener);
-        System.out.println("Class -> "+taskListener.getClass());
         assertTrue(taskListener instanceof JPATaskLifeCycleEventListener);
 
-        TaskEventsService taskEventsService = taskServiceEntryPoint.getTaskEventsService();
+        TaskEventsService eventsService = taskService.getTaskEventsService();
         
-        TaskIdentityService taskIdentityService = taskServiceEntryPoint.getTaskIdentityService();
-        taskIdentityService.addUser(new User("salaboy"));
+        TaskIdentityService identityService = taskService.getTaskIdentityService();
+        identityService.addUser(new User("salaboy"));
         
-        User salaboy = taskIdentityService.getUserById("salaboy");
+        User salaboy = identityService.getUserById("salaboy");
         assertNotNull(salaboy);
         
         
-        TaskDefService taskDefService = taskServiceEntryPoint.getTaskDefService();
+        TaskDefService defService = taskService.getTaskDefService();
         TaskDef taskDef = createSimpleTaskDef("myTaskDef", salaboy);
        
         //From the spec: register, port == taskdefid 
-        taskDefService.deployTaskDef(taskDef);
+        defService.deployTaskDef(taskDef);
         
         // getById
-        TaskDef taskDefById = taskDefService.getTaskDefById("myTaskDef");
+        TaskDef taskDefById = defService.getTaskDefById("myTaskDef");
         assertNotNull(taskDefById);
         
         // list
-        List<TaskDef> allTaskDef = taskDefService.getAllTaskDef("*");
+        List<TaskDef> allTaskDef = defService.getAllTaskDef("*");
         assertEquals(1, allTaskDef.size());
         
 //        
 //        // Lifecycle and query methods for task instances only!!!! 
-        TaskInstanceService taskInstanceService = taskServiceEntryPoint.getTaskInstanceService();
+        TaskInstanceService taskInstanceService = taskService.getTaskInstanceService();
         
         Map<String, Object> params = new HashMap<String, Object>();
         
         long taskId = taskInstanceService.newTask("myTaskDef", params);
         
         taskInstanceService.start(taskId, "salaboy");
-        List<TaskEvent> taskEventsById = taskEventsService.getTaskEventsById(taskId);
+        List<TaskEvent> taskEventsById = eventsService.getTaskEventsById(taskId);
         assertEquals(1, taskEventsById.size());
         
         Map<String, Object> output = new HashMap<String, Object>();
@@ -115,34 +122,32 @@ public class NewAPITest {
         output.put("key2", 2);
         taskInstanceService.complete(taskId, "salaboy", output);
         
-        TaskQueryService taskQueryService = taskServiceEntryPoint.getTaskQueryService();
+        TaskQueryService queryService = taskService.getTaskQueryService();
         
-        TaskAdminService taskAdminService = taskServiceEntryPoint.getTaskAdminService();
+        TaskAdminService adminService = taskService.getTaskAdminService();
         
-        List<TaskSummary> tasksOwned = taskQueryService.getTasksOwned("salaboy");
+        List<TaskSummary> tasksOwned = queryService.getTasksOwned("salaboy");
         
         assertEquals(1, tasksOwned.size());
         
-        long outputId = taskQueryService.getTaskInstanceById(taskId).getOutputId();
+        long outputId = queryService.getTaskInstanceById(taskId).getOutputId();
         assertNotNull(outputId);
         
-        assertNotNull(taskQueryService.getContentById(outputId));
+        assertNotNull(queryService.getContentById(outputId));
         
         
         
         //Clean up tasks
-        taskAdminService.removeTasks(tasksOwned);
+        adminService.removeTasks(tasksOwned);
 //      
         //Clean up events
-        taskEventsService.removeTaskEventsById(taskId);
+        eventsService.removeTaskEventsById(taskId);
         
         //Clean up identity
-        taskIdentityService.removeUser("salaboy");
-        
-        
-        
+        identityService.removeUser("salaboy");
+     
         // unregister
-        taskDefService.undeployTaskDef("myTaskDef");
+        defService.undeployTaskDef("myTaskDef");
         
         // Granular services will help us to have fine grained control over the configurations and different implementations
         //  for a CMR integration this is vital
@@ -167,11 +172,7 @@ public class NewAPITest {
 //        List<PresentationElement> presentationElements = taskPresentationService.getPresentationElements(taskId);
 //        
         weld.shutdown();
-        
-        
-        
-        
-        
+
     }
     
     @Test
@@ -179,34 +180,107 @@ public class NewAPITest {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
         
-        TaskServiceEntryPoint taskServiceEntryPoint = container.instance().select(TaskServiceEntryPointImpl.class).get();
+        TaskServiceEntryPoint taskService = container.instance().select(TaskServiceEntryPointImpl.class).get();
         //Singleton.. that we need to instantiate
         TaskLifeCycleEventListener taskListener = container.instance().select(TaskLifeCycleEventListener.class).get(); 
         
-        taskServiceEntryPoint.addUser(new User("salaboy"));
+        taskService.addUser(new User("salaboy"));
         
-        User salaboy = taskServiceEntryPoint.getUserById("salaboy");
+        User salaboy = taskService.getUserById("salaboy");
         
         TaskDef taskDef = createSimpleTaskDef("myTaskDef", salaboy);
        
         //From the spec: register, port == taskdefid 
-        taskServiceEntryPoint.deployTaskDef(taskDef);
+        taskService.deployTaskDef(taskDef);
         
         Map<String, Object> params = new HashMap<String, Object>();
-        long taskId = taskServiceEntryPoint.newTask("myTaskDef", params);
+        long taskId = taskService.newTask("myTaskDef", params);
         
-        List<TaskSummary> tasksOwned = taskServiceEntryPoint.getTasksOwned("salaboy");
+        List<TaskSummary> tasksOwned = taskService.getTasksOwned("salaboy");
         
-        taskServiceEntryPoint.start(taskId, "salaboy");
+        taskService.start(taskId, "salaboy");
         
-        List<TaskEvent> taskEventsById = taskServiceEntryPoint.getTaskEventsById(taskId);
+        List<TaskEvent> taskEventsById = taskService.getTaskEventsById(taskId);
         assertEquals(1, taskEventsById.size());
         
-        taskServiceEntryPoint.complete(taskId, "salaboy", null);
+        taskService.complete(taskId, "salaboy", null);
         
         
     }
     
+    @Test
+    public void newApiGetMainEntryPointHidingTaskDefTest() {
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
+        
+        TaskServiceEntryPoint taskService = container.instance().select(TaskServiceEntryPointImpl.class).get();
+        //Singleton.. that we need to instantiate
+        container.instance().select(TaskLifeCycleEventListener.class).get(); 
+        
+        taskService.addUser(new User("salaboy"));
+        
+        User salaboy = taskService.getUserById("salaboy");
+        // We can have a BPMN2 User Task Parser to create a task def, 
+        // like the one inside the WorkItemHandlers now
+        TaskDef def = createSimpleTaskDef("myTaskDef", salaboy);
+        
+        long taskId = taskService.newTask(def, null);
+        TaskInstance taskInstanceById = taskService.getTaskInstanceById(taskId);
+        
+        assertNotNull(taskInstanceById);
+        
+        
+        
+    }
+    
+    @Test
+    public void noWeld() {
+        // Here we lost and we will be responsible for providing the following features :
+        //  - Managed and Shared Persistence Manager
+        //  - The event model (fire/observe)
+        //  - Transactional model
+        TaskServiceEntryPoint taskService = new TaskServiceEntryPointImpl(); 
+        taskService.setTaskDefService(new TaskDefServiceImpl());
+        taskService.setTaskAdminService(new TaskAdminServiceImpl());
+        taskService.setTaskEventsService(new TaskEventsServiceImpl());
+        taskService.setTaskIdentityService(new TaskIdentityServiceImpl());
+        taskService.setTaskQueryService(new TaskQueryServiceImpl());
+        LifeCycleManager lifeCycleManager = new MVELLifeCycleManager(taskService.getTaskDefService(), 
+                                                                    taskService.getTaskQueryService(), 
+                                                                    taskService.getTaskIdentityService(),
+                                                                    new InternalTaskLifeCycleEventListener());
+        
+        taskService.setTaskInstanceService(
+                new TaskInstanceServiceImpl(taskService.getTaskDefService(),
+                                            lifeCycleManager));
+        
+    }
+    @Test
+    public void hidingWeld(){
+        // We hide weld and use it internally 
+        TaskServiceEntryPoint taskService = TaskServiceModule.getInstance().getTaskService();
+        //If the user wants to get access to the container to fire events or integrate with 
+        // it's own beans the TaskServiceModule they can:
+        WeldContainer container = TaskServiceModule.getInstance().getContainer();
+        assertNotNull(container);
+        
+        taskService.addUser(new User("salaboy"));
+        
+        User salaboy = taskService.getUserById("salaboy");
+        // We can have a BPMN2 User Task Parser to create a task def, 
+        // like the one inside the WorkItemHandlers now
+        TaskDef def = createSimpleTaskDef("myTaskDef", salaboy);
+        
+        long taskId = taskService.newTask(def, null);
+        TaskInstance taskInstanceById = taskService.getTaskInstanceById(taskId);
+        
+        assertNotNull(taskInstanceById);
+    }
+    
+    @Test
+    public void spring() {
+    
+    }
   
     private TaskDef createSimpleTaskDef(String taskDefName, User salaboy) {
         // We can automatically create TaskDef based on the BPMN2 file

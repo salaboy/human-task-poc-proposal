@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 import org.jboss.human.interactions.api.TaskDefService;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.model.TaskDef;
-import org.jboss.seam.transaction.TransactionPropagation;
 import org.jboss.seam.transaction.Transactional;
 
 /**
@@ -20,8 +19,8 @@ import org.jboss.seam.transaction.Transactional;
  */
 
 @Local
-@Transactional(TransactionPropagation.REQUIRED)
 @Named
+@Transactional
 public class TaskDefServiceImpl implements TaskDefService{
     
     @Inject 
@@ -31,18 +30,11 @@ public class TaskDefServiceImpl implements TaskDefService{
         
     }
 
-    @Transactional(TransactionPropagation.REQUIRED)
     public void deployTaskDef(TaskDef def) {
-        
-       // em.getTransaction().begin();
         em.persist(def);    
-       // em.getTransaction().commit();
-        
-        
     }
 
     public List<TaskDef> getAllTaskDef(String filter) {
-        
         List<TaskDef> resultList = em.createQuery("select td from TaskDef td").getResultList(); 
         return resultList;
     }
@@ -60,7 +52,7 @@ public class TaskDefServiceImpl implements TaskDefService{
         return null;
         
     }
-
+    
     public void undeployTaskDef(String name) {
         TaskDef taskDef = getTaskDefById(name);
         em.remove(taskDef);    

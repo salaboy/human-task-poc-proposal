@@ -6,6 +6,7 @@ package org.jboss.human.interactions.impl;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -20,8 +21,8 @@ import org.jboss.seam.transaction.Transactional;
  * @author salaboy
  */
 @Local
-@Transactional
 @Named
+@Transactional
 public class TaskAdminServiceImpl implements TaskAdminService{
 
     @Inject 

@@ -64,7 +64,12 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     public MVELLifeCycleManager() {
     }
 
-    
+    public MVELLifeCycleManager(TaskDefService taskDefService, TaskQueryService taskQueryService, TaskIdentityService taskIdentityService, TaskLifeCycleEventListener eventListener) {
+        this.taskDefService = taskDefService;
+        this.taskQueryService = taskQueryService;
+        this.taskIdentityService = taskIdentityService;
+        this.eventListener = eventListener;
+    }
 
     void evalCommand(final Operation operation, final List<OperationCommand> commands, final TaskInstance task,
             final User user, final OrganizationalEntity targetEntity,
@@ -225,11 +230,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             final String targetEntityId, final Map<String, Object> data,
             List<String> groupIds) throws TaskException {
         OrganizationalEntity targetEntity = null;
-
-
-
-
-
         try {
             final List<OperationCommand> commands = operations.get(operation);
 

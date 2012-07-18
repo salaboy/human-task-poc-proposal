@@ -11,12 +11,15 @@ import org.jboss.human.interactions.api.TaskEventsService;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.internals.annotations.Persistent;
 import org.jboss.human.interactions.model.TaskEvent;
+import org.jboss.seam.transaction.Transactional;
 
 /**
  *
  * @author salaboy
  */
-@Persistent @Local
+@Persistent 
+@Local
+@Transactional
 public class TaskEventsServiceImpl implements TaskEventsService{
     @Inject  
     private EntityManager em;

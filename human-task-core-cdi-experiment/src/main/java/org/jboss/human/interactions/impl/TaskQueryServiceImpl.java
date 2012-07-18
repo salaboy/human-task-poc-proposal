@@ -22,8 +22,8 @@ import org.jboss.seam.transaction.Transactional;
  * @author salaboy
  */
 @Local
-@Transactional
 @Named
+@Transactional
 public class TaskQueryServiceImpl implements TaskQueryService {
     
     

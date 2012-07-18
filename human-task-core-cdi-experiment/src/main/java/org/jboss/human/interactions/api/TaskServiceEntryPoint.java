@@ -7,7 +7,6 @@ package org.jboss.human.interactions.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.jboss.human.interactions.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jboss.human.interactions.model.Content;
 import org.jboss.human.interactions.model.FaultData;
 import org.jboss.human.interactions.model.Group;
@@ -35,11 +34,22 @@ public interface TaskServiceEntryPoint {
     TaskInstanceService getTaskInstanceService();
 
     TaskQueryService getTaskQueryService();
-    
+
     TaskEventsService getTaskEventsService();
     
+    void setTaskAdminService(TaskAdminService adminService);
+
+    void setTaskDefService(TaskDefService defService);
+
+    void setTaskIdentityService(TaskIdentityService identityService);
+
+    void setTaskInstanceService(TaskInstanceService taskInstanceService);
+
+    void setTaskQueryService(TaskQueryService queryService);
     
-    // Facades
+    void setTaskEventsService(TaskEventsService eventsService);
+    
+    // Delegates
 
     void activate(long taskId, String userId);
 
@@ -132,6 +142,10 @@ public interface TaskServiceEntryPoint {
     List<User> getUsers();
 
     long newTask(String name, Map<String, Object> params);
+    
+    long newTask(TaskDef def, Map<String, Object> params);
+    
+    long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
 
     void release(long taskId, String userId);
 

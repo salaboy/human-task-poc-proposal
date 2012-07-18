@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jboss.human.interactions.internals.annotations.External;
 import org.jboss.human.interactions.internals.annotations.Persistent;
 import org.jboss.human.interactions.internals.annotations.Local;
-import org.jboss.human.interactions.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jboss.human.interactions.model.Content;
 import org.jboss.human.interactions.model.FaultData;
 import org.jboss.human.interactions.model.Group;
@@ -329,9 +327,38 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public List<TaskEvent> getTaskEventsById(long taskId) {
         return taskEventsService.getTaskEventsById(taskId);
     }
+
+    public long newTask(TaskDef def, Map<String, Object> params) {
+        return taskInstanceService.newTask(def, params);
+    }
     
-    
-    
+    public long newTask(TaskDef def, Map<String, Object> params, boolean deploy) {
+        return taskInstanceService.newTask(def, params, deploy);
+    }
+
+    public void setTaskDefService(TaskDefService taskDefService) {
+        this.taskDefService = taskDefService;
+    }
+
+    public void setTaskInstanceService(TaskInstanceService taskInstanceService) {
+        this.taskInstanceService = taskInstanceService;
+    }
+
+    public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
+        this.taskIdentityService = taskIdentityService;
+    }
+
+    public void setTaskAdminService(TaskAdminService taskAdminService) {
+        this.taskAdminService = taskAdminService;
+    }
+
+    public void setTaskQueryService(TaskQueryService taskQueryService) {
+        this.taskQueryService = taskQueryService;
+    }
+
+    public void setTaskEventsService(TaskEventsService taskEventsService) {
+        this.taskEventsService = taskEventsService;
+    }
     
     
     

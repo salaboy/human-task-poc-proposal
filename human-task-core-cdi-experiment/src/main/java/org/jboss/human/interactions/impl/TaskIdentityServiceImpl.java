@@ -12,7 +12,6 @@ import org.jboss.human.interactions.api.TaskIdentityService;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.model.Group;
 import org.jboss.human.interactions.model.User;
-import org.jboss.seam.transaction.TransactionPropagation;
 import org.jboss.seam.transaction.Transactional;
 
 /**
@@ -20,8 +19,8 @@ import org.jboss.seam.transaction.Transactional;
  * @author salaboy
  */
 @Local
-@Transactional(TransactionPropagation.REQUIRED)
 @Named
+@Transactional
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
     @Inject 
@@ -30,7 +29,6 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     public TaskIdentityServiceImpl() {
     }
     
-    @Transactional(TransactionPropagation.REQUIRED)
     public void addUser(User user) {
         em.persist(user);
  
@@ -43,7 +41,7 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     public void removeGroup(String groupId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     public void removeUser(String userId) {
         User user = em.find(User.class, userId);
         em.remove(user);
@@ -62,7 +60,6 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public Group getGroupById(String groupId) {
-        
         return em.find(Group.class, groupId);
     }
 }
