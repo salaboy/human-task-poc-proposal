@@ -13,7 +13,7 @@ import org.jboss.ht.services.annotations.Mock;
 import org.jboss.human.interactions.events.BeforeTaskCompletedEvent;
 import org.jboss.human.interactions.events.BeforeTaskStartedEvent;
 import org.jboss.human.interactions.internals.exceptions.TaskException;
-import org.jboss.human.interactions.internals.lifecycle.LifecycleManager;
+import org.jboss.human.interactions.internals.lifecycle.LifeCycleManager;
 import org.jboss.human.interactions.model.Operation;
 
 /**
@@ -26,7 +26,7 @@ import org.jboss.human.interactions.model.Operation;
  * https://github.com/jboss-switchyard/components/blob/master/camel/camel-core/src/test/resources/org/switchyard/component/camel/deploy/switchyard-activator-math-test.xml
  */
 @Mock
-public class MockLifeCycleManager implements LifecycleManager{
+public class MockLifeCycleManager implements LifeCycleManager{
     @Inject
     private Event<Operation> taskOperationEvents;
     

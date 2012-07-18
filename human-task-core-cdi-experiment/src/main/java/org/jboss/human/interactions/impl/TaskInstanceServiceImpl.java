@@ -14,7 +14,7 @@ import org.jboss.human.interactions.api.TaskDefService;
 import org.jboss.human.interactions.api.TaskInstanceService;
 import org.jboss.human.interactions.impl.factories.TaskInstanceFactory;
 import org.jboss.human.interactions.internals.annotations.Local;
-import org.jboss.human.interactions.internals.lifecycle.LifecycleManager;
+import org.jboss.human.interactions.internals.lifecycle.LifeCycleManager;
 import org.jboss.human.interactions.internals.lifecycle.Mvel;
 import org.jboss.human.interactions.model.FaultData;
 import org.jboss.human.interactions.model.Operation;
@@ -36,7 +36,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     private TaskDefService taskDefService;
 
     @Inject @Mvel
-    private LifecycleManager lifeCycleManager;
+    private LifeCycleManager lifeCycleManager;
     
     @Inject 
     private EntityManager em;

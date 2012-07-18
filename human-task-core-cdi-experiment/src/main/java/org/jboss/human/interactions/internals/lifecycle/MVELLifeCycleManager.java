@@ -30,6 +30,7 @@ import org.jboss.human.interactions.events.BeforeTaskClaimedEvent;
 import org.jboss.human.interactions.events.BeforeTaskCompletedEvent;
 import org.jboss.human.interactions.events.BeforeTaskFailedEvent;
 import org.jboss.human.interactions.events.BeforeTaskSkippedEvent;
+import org.jboss.human.interactions.events.BeforeTaskStartedEvent;
 import org.jboss.human.interactions.internals.annotations.Local;
 import org.jboss.human.interactions.internals.exceptions.PermissionDeniedException;
 import org.jboss.human.interactions.internals.exceptions.TaskException;
@@ -48,30 +49,22 @@ import org.jboss.human.interactions.model.User;
  * @author salaboy
  */
 @Mvel
-public class MVELLifecycleManager implements LifecycleManager {
+public class MVELLifeCycleManager implements LifeCycleManager {
 //    private @Inject @Logger Log logger;
 
-    @Inject
-    private EntityManager em;
     
-    private TaskDefService taskDefService;
-    private TaskQueryService taskQueryService;
-    private TaskIdentityService taskIdentityService;
+    private @Inject EntityManager em;
+    private @Inject @Local TaskDefService taskDefService;
+    private @Inject @Local TaskQueryService taskQueryService;
+    private @Inject @Local TaskIdentityService taskIdentityService;
     private Map<Operation, List<OperationCommand>> operations;
-    @Inject
-    private Event<TaskInstance> taskInstanceEvents;
-    private @Inject
-    @Internal
-    TaskLifeCycleEventListener eventListener;
+    private @Inject Event<TaskInstance> taskInstanceEvents;
+    private @Inject @Internal TaskLifeCycleEventListener eventListener;
 
-    @Inject
-    public MVELLifecycleManager(@Local TaskDefService taskDefService,
-            @Local TaskQueryService taskQueryService,
-            @Local TaskIdentityService taskIdentityService) {
-        this.taskDefService = taskDefService;
-        this.taskQueryService = taskQueryService;
-        this.taskIdentityService = taskIdentityService;
+    public MVELLifeCycleManager() {
     }
+
+    
 
     void evalCommand(final Operation operation, final List<OperationCommand> commands, final TaskInstance task,
             final User user, final OrganizationalEntity targetEntity,
@@ -233,18 +226,14 @@ public class MVELLifecycleManager implements LifecycleManager {
             List<String> groupIds) throws TaskException {
         OrganizationalEntity targetEntity = null;
 
-//        groupIds = doUserGroupCallbackOperation(userId, groupIds);
-//        doCallbackUserOperation(targetEntityId);
-//        if (targetEntityId != null) {
-//            targetEntity = getEntity(OrganizationalEntity.class, targetEntityId);
-//        }
 
 
-//        boolean transactionOwner = false;
+
+
         try {
             final List<OperationCommand> commands = operations.get(operation);
 
-            // transactionOwner = tpm.beginTransaction();
+            
            
 
             TaskInstance task = taskQueryService.getTaskInstanceById(taskId);
@@ -253,6 +242,11 @@ public class MVELLifecycleManager implements LifecycleManager {
 
 
             switch (operation) {
+                case Start: {
+                    taskInstanceEvents.select(new AnnotationLiteral<BeforeTaskStartedEvent>() {
+                    }).fire(task);
+                    break;
+                }
                 case Claim: {
 //                    taskClaimOperation(task);
 

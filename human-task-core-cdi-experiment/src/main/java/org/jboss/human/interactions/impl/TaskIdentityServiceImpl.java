@@ -47,7 +47,6 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     public void removeUser(String userId) {
         User user = em.find(User.class, userId);
         em.remove(user);
-
     }
 
     public List<User> getUsers() {

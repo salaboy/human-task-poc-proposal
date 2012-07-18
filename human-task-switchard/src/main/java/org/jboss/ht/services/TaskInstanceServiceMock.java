@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import org.jboss.ht.services.annotations.Mock;
 import org.jboss.human.interactions.api.TaskInstanceService;
-import org.jboss.human.interactions.internals.lifecycle.LifecycleManager;
+import org.jboss.human.interactions.internals.lifecycle.LifeCycleManager;
 import org.jboss.human.interactions.model.FaultData;
 import org.jboss.human.interactions.model.Operation;
 
@@ -21,7 +21,7 @@ import org.jboss.human.interactions.model.Operation;
 public class TaskInstanceServiceMock implements TaskInstanceService{
     
     @Inject @Mock
-    private LifecycleManager manager;
+    private LifeCycleManager manager;
     
     public long newTask(String name, Map<String, Object> params) {
         throw new UnsupportedOperationException("Not supported yet.");

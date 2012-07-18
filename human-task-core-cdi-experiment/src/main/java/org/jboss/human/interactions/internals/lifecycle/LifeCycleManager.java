@@ -13,7 +13,7 @@ import org.jboss.human.interactions.model.Operation;
  *
  * @author salaboy
  */
-public interface LifecycleManager {
+public interface LifeCycleManager {
     public void taskOperation(final Operation operation, final long taskId, final String userId,
                               final String targetEntityId, final Map<String, Object> data,
                               List<String> groupIds) throws TaskException;
