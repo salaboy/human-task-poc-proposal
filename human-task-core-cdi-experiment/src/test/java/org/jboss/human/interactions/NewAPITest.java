@@ -257,7 +257,8 @@ public class NewAPITest {
     }
     @Test
     public void hidingWeld(){
-        // We hide weld and use it internally 
+        // We hide weld and use it internally, there is no need for the user to know how to use
+        //   weld or how it works
         TaskServiceEntryPoint taskService = TaskServiceModule.getInstance().getTaskService();
         //If the user wants to get access to the container to fire events or integrate with 
         // it's own beans the TaskServiceModule they can:
@@ -279,7 +280,7 @@ public class NewAPITest {
     
     @Test
     public void spring() {
-    
+        
     }
   
     private TaskDef createSimpleTaskDef(String taskDefName, User salaboy) {
