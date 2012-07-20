@@ -3,7 +3,7 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_1_0.xsd"
                version="1.0">  
-      <named-query name="QueuedRequestInfos">
+      <named-query name="QueuedRequests">
           <query>
               Select r from RequestInfo as r where r.status ='QUEUED'
           </query>
@@ -26,7 +26,13 @@
           </query>
       </named-query>
       
-      <named-query name="allErrors">
+      <named-query name="GetAllRequests">
+          <query>
+              Select r from RequestInfo as r 
+          </query>
+      </named-query>
+      
+      <named-query name="GetAllErrors">
           <query>
               Select e from ErrorInfo as e 
           </query>
