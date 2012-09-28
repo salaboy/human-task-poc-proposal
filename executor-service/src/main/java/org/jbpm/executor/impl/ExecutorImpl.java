@@ -38,7 +38,7 @@ public class ExecutorImpl implements Executor {
     
     private ScheduledFuture<?> handle;
     private int nroOfThreads = 1;
-    private int defaultNroOfRetries = 0;
+    private int defaultNroOfRetries = 3;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nroOfThreads);
     
     public ExecutorImpl() {

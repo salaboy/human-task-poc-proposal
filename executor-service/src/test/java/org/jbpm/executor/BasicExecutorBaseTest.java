@@ -14,6 +14,7 @@ import org.jbpm.executor.api.Executor;
 import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.api.ExecutorRequestAdminService;
 import org.jbpm.executor.commands.PrintOutCommand;
+import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -54,9 +55,11 @@ public abstract class BasicExecutorBaseTest {
     @After
     public void tearDown() {
         adminService.clearAllRequests();
+        adminService.clearAllErrors();
+        
         executor.destroy();
     }
-
+    
     @Test
     public void hello() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
@@ -77,7 +80,6 @@ public abstract class BasicExecutorBaseTest {
 
 
     }
-    
     @Test
     public void hello2() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
@@ -101,6 +103,54 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(1, executedRequests.size());
 
         assertEquals(2, ((Long)cachedEntities.get((String)commandContext.getData("businessKey"))).intValue());
+        
+        
+
+    }
+    
+    @Test
+    public void executorExceptionTest() throws InterruptedException {
+
+        CommandContext commandContext = new CommandContext();
+        commandContext.setData("businessKey", UUID.randomUUID().toString());
+        cachedEntities.put((String) commandContext.getData("businessKey"), new Long(1));
+        String callbacks = SimpleIncrementCallback.class.getCanonicalName();
+        commandContext.setData("callbacks", callbacks);
+        commandContext.setData("retries", 0);
+        executor.scheduleRequest(ThrowExceptionCommand.class.getCanonicalName(), commandContext);
+        System.out.println(System.currentTimeMillis() + "  >>> Sleeping for 10 secs");
+        Thread.sleep(10000);
+        
+        List<RequestInfo> inErrorRequests = queryService.getInErrorRequests();
+        assertEquals(1, inErrorRequests.size());
+        System.out.println("Error: " + inErrorRequests.get(0));
+
+        List<ErrorInfo> errors = queryService.getAllErrors();
+        System.out.println(" >>> Errors: " + errors);
+        assertEquals(1, errors.size());
+
+        
+    }
+
+    @Test
+    public void defaultRequestRetryTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        executor.scheduleRequest(ThrowExceptionCommand.class.getCanonicalName(), ctxCMD);
+
+        Thread.sleep(25000);
+
+       
+
+        List<RequestInfo> inErrorRequests = queryService.getInErrorRequests();
+        assertEquals(1, inErrorRequests.size());
+
+        List<ErrorInfo> errors = queryService.getAllErrors();
+        System.out.println(" >>> Errors: " + errors);
+        // Three retries means 4 executions in total 1(regular) + 3(retries)
+        assertEquals(4, errors.size());
+        
         
         
 

@@ -10,5 +10,5 @@ package org.jbpm.executor.api;
  */
 public interface ExecutorRequestAdminService {
     public int clearAllRequests();
-    
+    public int clearAllErrors();
 }
