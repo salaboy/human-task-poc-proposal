@@ -13,7 +13,6 @@ import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.api.Executor;
 import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.api.ExecutorRequestAdminService;
-import org.jbpm.executor.commands.PrintOutCommand;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.junit.After;
@@ -64,7 +63,7 @@ public abstract class BasicExecutorBaseTest {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
-        executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), ctxCMD);
+        executor.scheduleRequest("PrintOutCmd", ctxCMD);
 
         Thread.sleep(10000);
 
@@ -85,9 +84,8 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String)commandContext.getData("businessKey"), new Long(1));
         
-        String callbacks = SimpleIncrementCallback.class.getCanonicalName();
-        commandContext.setData("callbacks", callbacks);
-        executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), commandContext);
+        commandContext.setData("callbacks", "SimpleIncrementCallback");
+        executor.scheduleRequest("PrintOutCmd", commandContext);
 
         Thread.sleep(10000);
 
@@ -110,10 +108,10 @@ public abstract class BasicExecutorBaseTest {
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new Long(1));
-        String callbacks = SimpleIncrementCallback.class.getCanonicalName();
-        commandContext.setData("callbacks", callbacks);
+        
+        commandContext.setData("callbacks", "SimpleIncrementCallback");
         commandContext.setData("retries", 0);
-        executor.scheduleRequest(ThrowExceptionCommand.class.getCanonicalName(), commandContext);
+        executor.scheduleRequest("ThrowExceptionCmd", commandContext);
         System.out.println(System.currentTimeMillis() + "  >>> Sleeping for 10 secs");
         Thread.sleep(10000);
         
@@ -133,7 +131,7 @@ public abstract class BasicExecutorBaseTest {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
-        executor.scheduleRequest(ThrowExceptionCommand.class.getCanonicalName(), ctxCMD);
+        executor.scheduleRequest("ThrowExceptionCmd", ctxCMD);
 
         Thread.sleep(25000);
 
@@ -158,7 +156,7 @@ public abstract class BasicExecutorBaseTest {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
-        Long requestId = executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), ctxCMD);
+        Long requestId = executor.scheduleRequest("PrintOutCmd", ctxCMD);
         
         // cancel the task immediately
         executor.cancelRequest(requestId);

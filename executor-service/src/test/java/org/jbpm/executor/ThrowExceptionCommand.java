@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor;
 
+import javax.inject.Named;
 import org.jbpm.executor.api.Command;
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.api.ExecutionResults;
@@ -12,6 +13,7 @@ import org.jbpm.executor.api.ExecutionResults;
  *
  * @author salaboy
  */
+@Named(value="ThrowExceptionCmd")
 public class ThrowExceptionCommand implements Command{
 
     public ExecutionResults execute(CommandContext ctx) {

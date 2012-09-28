@@ -30,6 +30,7 @@ public class ArquillianCDISimpleExecutorTest extends BasicExecutorBaseTest {
                 .addPackage("org.jbpm.executor.impl")
                 .addPackage("org.jbpm.executor.entities")
                 .addPackage("org.jboss.weld.environment.se.threading")
+                .addPackage("org.jbpm.executor.commands")
                 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Executor-orm.xml", ArchivePaths.create("Executor-orm.xml"))
