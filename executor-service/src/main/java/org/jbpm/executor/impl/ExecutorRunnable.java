@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.seam.transaction.TransactionPropagation;
 import org.jboss.seam.transaction.Transactional;
@@ -33,7 +34,8 @@ public class ExecutorRunnable implements Runnable {
 
     @Inject 
     private EntityManager em;
-    
+   
+    @Transactional
     public void run() {
         System.out.println(System.currentTimeMillis() + " >>> Waking Up!!!");
         List<?> resultList = em.createQuery("Select r from RequestInfo as r where r.status ='QUEUED' or r.status = 'RETRYING' ORDER BY r.time DESC").getResultList();
@@ -43,6 +45,8 @@ public class ExecutorRunnable implements Runnable {
             Throwable exception = null;
             try {
                 r = (RequestInfo) resultList.get(0);
+                r.setStatus(STATUS.RUNNING);
+                em.merge(r);
                 System.out.println(" >> Processing Request Id: " + r.getId());
                 System.out.println(" >> Request Status =" + r.getStatus());
                 System.out.println(" >> Command Name to execute = " + r.getCommandName());
@@ -107,7 +111,6 @@ public class ExecutorRunnable implements Runnable {
                 }
 
                 em.merge(r);
-                //em.persist(errorInfo);
 
 
                 System.out.println(System.currentTimeMillis() + " >>> XXXXXXX After - Error Found!!!" + exception.getMessage());

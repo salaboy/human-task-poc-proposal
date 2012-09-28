@@ -35,6 +35,7 @@ public class ExecutorImpl implements Executor {
     private EntityManager em;
     @Inject
     private ExecutorRunnable task;
+    
     private ScheduledFuture<?> handle;
     private int nroOfThreads = 1;
     private int defaultNroOfRetries = 0;

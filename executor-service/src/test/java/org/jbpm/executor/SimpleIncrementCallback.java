@@ -1,27 +1,22 @@
 package org.jbpm.executor;
 
-///*
-// * To change this template, choose Tools | Templates
-// * and open the template in the editor.
-// */
-//package org.jboss.executor;
-//
-//import org.jboss.executor.api.CommandContext;
-//import org.jboss.executor.api.CommandCallback;
-//import org.jboss.executor.api.ExecutionResults;
-//
-///**
-// *
-// * @author salaboy
-// */
-//public class SimpleIncrementCallback implements CommandCallback{
-//
-//    public void onCommandDone(CommandContext ctx, ExecutionResults results) {
-//        String businessKey = (String)ctx.getData("businessKey");
-//        Long increment = (Long)ExecutorSimpleTest.cachedEntities.get(businessKey);
-//        System.out.println(" >>> Before Incrementing = "+increment);
-//        ExecutorSimpleTest.cachedEntities.put(businessKey, increment + 1);
-//        System.out.println(" >>> After Incrementing = "+ExecutorSimpleTest.cachedEntities.get(businessKey));
-//        
-//    }  
-//}
+import org.jbpm.executor.api.CommandCallback;
+import org.jbpm.executor.api.CommandContext;
+import org.jbpm.executor.api.ExecutionResults;
+
+
+/**
+ *
+ * @author salaboy
+ */
+public class SimpleIncrementCallback implements CommandCallback{
+
+    public void onCommandDone(CommandContext ctx, ExecutionResults results) {
+        String businessKey = (String)ctx.getData("businessKey");
+        Long increment = (Long)BasicExecutorBaseTest.cachedEntities.get(businessKey);
+        System.out.println(" >>> Before Incrementing = "+increment);
+        BasicExecutorBaseTest.cachedEntities.put(businessKey, increment + 1);
+        System.out.println(" >>> After Incrementing = "+BasicExecutorBaseTest.cachedEntities.get(businessKey));
+        
+    }  
+}

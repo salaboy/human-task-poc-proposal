@@ -9,7 +9,7 @@ package org.jbpm.executor.entities;
  * @author salaboy
  */
 public enum STATUS {
-   QUEUED, DONE, CANCELLED, ERROR, RETRYING;
+   QUEUED, DONE, CANCELLED, ERROR, RETRYING, RUNNING;
 
    
 }
