@@ -11,8 +11,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import org.jboss.solder.core.ExtensionManaged;
-import org.jboss.weld.environment.se.contexts.ThreadScoped;
-import org.jbpm.executor.impl.ExecutorRunnable;
 
 /**
  *

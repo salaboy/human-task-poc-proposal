@@ -4,18 +4,11 @@
  */
 package org.jbpm.executor;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
 import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.api.Executor;
-import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.commands.PrintOutCommand;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,9 +20,9 @@ import static org.junit.Assert.*;
  *
  * @author salaboy
  */
-public class CDIExecutorTest {
+public class NoCDIExecutorTest {
     
-    public CDIExecutorTest() {
+    public NoCDIExecutorTest() {
     }
 
     @BeforeClass
@@ -51,11 +44,10 @@ public class CDIExecutorTest {
     }
 
     @Test
-    public void hello() throws InterruptedException {
-        Weld weld = new Weld();
-        WeldContainer container = weld.initialize();
-        Executor executor = container.instance().select(Executor.class).get();
-        ExecutorQueryService adminService = container.instance().select(ExecutorQueryService.class).get();
+    public void noCDIEnvUsingServiceFacade() throws InterruptedException {
+
+        
+        ExecutorServiceEntryPoint executor = ExecutorModule.getInstance().getExecutorServiceEntryPoint();
         
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
@@ -64,7 +56,7 @@ public class CDIExecutorTest {
         
         Thread.sleep(10000);
         
-        List<RequestInfo> executedRequests = adminService.getExecutedRequests();
+        List<RequestInfo> executedRequests = executor.getExecutedRequests();
         
         assertEquals(1, executedRequests.size());
 

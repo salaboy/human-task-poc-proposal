@@ -31,9 +31,9 @@ public class ArquillianCDISimpleExecutorTest extends BasicExecutorBaseTest {
                 .addPackage("org.jbpm.executor.entities")
                 .addPackage("org.jboss.weld.environment.se.threading")
                 
-                .addAsManifestResource("persistence-default.xml", ArchivePaths.create("persistence.xml"))
+                .addAsManifestResource("persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Executor-orm.xml", ArchivePaths.create("Executor-orm.xml"))
-                .addAsManifestResource("beans-default.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("beans.xml", ArchivePaths.create("beans.xml"));
 
     }
 }
