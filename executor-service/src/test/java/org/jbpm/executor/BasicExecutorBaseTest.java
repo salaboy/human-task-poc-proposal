@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
@@ -61,11 +60,9 @@ public abstract class BasicExecutorBaseTest {
     }
     
     @Test
-    public void hello() throws InterruptedException {
+    public void correctExcecutionTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
-
-      
 
         executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), ctxCMD);
 
@@ -80,15 +77,14 @@ public abstract class BasicExecutorBaseTest {
 
 
     }
+    
     @Test
-    public void hello2() throws InterruptedException {
-        CommandContext ctxCMD = new CommandContext();
-        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
-       
+    public void callbackTest() throws InterruptedException {
 
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String)commandContext.getData("businessKey"), new Long(1));
+        
         String callbacks = SimpleIncrementCallback.class.getCanonicalName();
         commandContext.setData("callbacks", callbacks);
         executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), commandContext);
@@ -150,9 +146,26 @@ public abstract class BasicExecutorBaseTest {
         System.out.println(" >>> Errors: " + errors);
         // Three retries means 4 executions in total 1(regular) + 3(retries)
         assertEquals(4, errors.size());
-        
-        
-        
 
     }
+    
+    
+    @Test
+    public void cancelRequestTest() throws InterruptedException { 
+
+        //  The executor is on purpose not started to not fight against race condition 
+        // with the request cancelations.
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        Long requestId = executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), ctxCMD);
+        
+        // cancel the task immediately
+        executor.cancelRequest(requestId);
+        
+        List<RequestInfo> cancelledRequests = queryService.getCancelledRequests();
+        assertEquals(1, cancelledRequests.size());
+
+    }
+    
 }

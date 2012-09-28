@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.api.Executor;
 import org.jboss.seam.transaction.Transactional;
@@ -125,11 +126,9 @@ public class ExecutorImpl implements Executor {
         RequestInfo r = (RequestInfo) result.iterator().next();
         
         
-        //em.lock(r, LockModeType.READ);
+        em.lock(r, LockModeType.PESSIMISTIC_READ);
         r.setStatus(STATUS.CANCELLED);
         em.merge(r);
-        
-        
         
         System.out.println(" >>> After - Cancelling Request with Id: " + requestId);
     }
