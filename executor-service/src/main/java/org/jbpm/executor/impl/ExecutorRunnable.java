@@ -143,6 +143,9 @@ public class ExecutorRunnable implements Runnable {
         synchronized (commandCache) {
             if (!commandCache.containsKey(name)) {
                 Set<Bean<?>> beans = beanManager.getBeans(name);
+                if (!beans.iterator().hasNext()){
+                    throw new IllegalArgumentException("Unknown Command implemenation with name '"+name+"'");
+                }
                 Bean<?> bean = beans.iterator().next();
                 commandCache.put(name, (Command) beanManager.getReference(bean, Command.class, beanManager.createCreationalContext(bean)));
             }
@@ -156,6 +159,9 @@ public class ExecutorRunnable implements Runnable {
         synchronized (callbackCache) {
             if (!callbackCache.containsKey(name)) {
                 Set<Bean<?>> beans = beanManager.getBeans(name);
+                if (!beans.iterator().hasNext()){
+                    throw new IllegalArgumentException("Unknown CommandCallback implemenation with name '"+name+"'");
+                }
                 Bean<?> bean = beans.iterator().next();
                 callbackCache.put(name, (CommandCallback) beanManager.getReference(bean, CommandCallback.class, beanManager.createCreationalContext(bean)));
             }
