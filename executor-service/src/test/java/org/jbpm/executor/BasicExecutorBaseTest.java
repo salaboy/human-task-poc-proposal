@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.entities.ErrorInfo;
@@ -25,7 +26,7 @@ public abstract class BasicExecutorBaseTest {
 
     @Inject
     protected ExecutorServiceEntryPoint executor;
-    public static Map<String, Object> cachedEntities = new HashMap<String, Object>();
+    public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
 
     @Before
     public void setUp() {
@@ -65,7 +66,7 @@ public abstract class BasicExecutorBaseTest {
 
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
-        cachedEntities.put((String) commandContext.getData("businessKey"), new Long(1));
+        cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
 
         commandContext.setData("callbacks", "SimpleIncrementCallback");
         executor.scheduleRequest("PrintOutCmd", commandContext);
@@ -79,7 +80,7 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> executedRequests = executor.getExecutedRequests();
         assertEquals(1, executedRequests.size());
 
-        assertEquals(2, ((Long) cachedEntities.get((String) commandContext.getData("businessKey"))).intValue());
+        assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
 
 
 
@@ -90,7 +91,7 @@ public abstract class BasicExecutorBaseTest {
 
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
-        cachedEntities.put((String) commandContext.getData("businessKey"), new Long(1));
+        cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
 
         commandContext.setData("callbacks", "SimpleIncrementCallback");
         commandContext.setData("retries", 0);

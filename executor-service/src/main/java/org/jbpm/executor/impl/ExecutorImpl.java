@@ -77,7 +77,7 @@ public class ExecutorImpl implements Executor {
     public void init() {
         
         logger.log(Level.INFO," >>> Starting Executor Component ...\n"+" \t - Thread Pool Size: {0}" + "\n"
-               + " \t - Interval: {1}"+"Seconds\n"+" \t - Retries per Request: {2}\n", 
+               + " \t - Interval: {1}"+" Seconds\n"+" \t - Retries per Request: {2}\n", 
                 new Object[]{threadPoolSize, interval, retries});
         
         scheduler = Executors.newScheduledThreadPool(threadPoolSize);
