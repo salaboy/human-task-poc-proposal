@@ -126,7 +126,7 @@ public class ExecutorRunnable implements Runnable {
                 em.merge(r);
 
 
-                logger.severe(" >>> XXXXXXX After - Error Handling!!!");
+                logger.severe(" >>> After - Error Handling!!!");
 
 
             } else {

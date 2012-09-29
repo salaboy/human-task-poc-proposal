@@ -39,15 +39,15 @@ public interface ExecutorServiceEntryPoint {
 
     public void destroy();
 
-    public int getWaitTime();
+    public int getInterval();
 
-    public void setWaitTime(int waitTime);
+    public void setInterval(int waitTime);
 
-    public int getDefaultNroOfRetries();
+    public int getRetries();
 
-    public void setDefaultNroOfRetries(int defaultNroOfRetries);
+    public void setRetries(int defaultNroOfRetries);
 
-    public int getNroOfThreads();
+    public int getThreadPoolSize();
 
-    public void setNroOfThreads(int nroOfThreads);
+    public void setThreadPoolSize(int nroOfThreads);
 }

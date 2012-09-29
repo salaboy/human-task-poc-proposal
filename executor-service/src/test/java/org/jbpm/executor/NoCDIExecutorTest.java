@@ -4,65 +4,34 @@
  */
 package org.jbpm.executor;
 
-import java.util.List;
-import java.util.UUID;
-import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.commands.PrintOutCommand;
-import org.jbpm.executor.entities.RequestInfo;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author salaboy
  */
-public class NoCDIExecutorTest {
+public class NoCDIExecutorTest extends BasicExecutorBaseTest{
+    
     
     public NoCDIExecutorTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @Before
     public void setUp() {
-     
+        executor = ExecutorModule.getInstance().getExecutorServiceEntryPoint();
+        executor.setThreadPoolSize(1);
+        executor.setInterval(3);
+        executor.init();
     }
 
     @After
     public void tearDown() {
-        
+        executor.clearAllRequests();
+        executor.clearAllErrors();
+        executor.destroy();
     }
 
-    @Test
-    public void noCDIEnvUsingServiceFacade() throws InterruptedException {
-
-        
-        ExecutorServiceEntryPoint executor = ExecutorModule.getInstance().getExecutorServiceEntryPoint();
-        executor.setNroOfThreads(1);
-        executor.setWaitTime(3);
-        executor.init();
-        
-
-        CommandContext ctxCMD = new CommandContext();
-        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
-        
-        executor.scheduleRequest("PrintOutCmd", ctxCMD);
-        
-        Thread.sleep(10000);
-        
-        List<RequestInfo> executedRequests = executor.getExecutedRequests();
-        
-        assertEquals(1, executedRequests.size());
-
-    }
+   
 }

@@ -40,48 +40,48 @@ public class ExecutorImpl implements Executor {
     private ExecutorRunnable task;
     
     private ScheduledFuture<?> handle;
-    private int nroOfThreads = 1;
-    private int defaultNroOfRetries = 3;
-    private int waitTime = 3;
+    private int threadPoolSize = 1;
+    private int retries = 3;
+    private int interval = 3;
     
     private ScheduledExecutorService scheduler;
     
     public ExecutorImpl() {
     }
     
-    public int getWaitTime() {
-        return waitTime;
+    public int getInterval() {
+        return interval;
     }
     
-    public void setWaitTime(int waitTime) {
-        this.waitTime = waitTime;
+    public void setInterval(int interval) {
+        this.interval = interval;
     }
     
-    public int getDefaultNroOfRetries() {
-        return defaultNroOfRetries;
+    public int getRetries() {
+        return retries;
     }
     
-    public void setDefaultNroOfRetries(int defaultNroOfRetries) {
-        this.defaultNroOfRetries = defaultNroOfRetries;
+    public void setRetries(int retries) {
+        this.retries = retries;
     }
     
-    public int getNroOfThreads() {
-        return nroOfThreads;
+    public int getThreadPoolSize() {
+        return threadPoolSize;
     }
     
-    public void setNroOfThreads(int nroOfThreads) {
-        this.nroOfThreads = nroOfThreads;
+    public void setThreadPoolSize(int threadPoolSize) {
+        this.threadPoolSize = threadPoolSize;
     }
     
     
     public void init() {
         
-        logger.log(Level.INFO," >>> Starting Executor Component ...\n"+" \t - Nro Of Threads: {0}" + "\n"
-               + " \t - Interval: {1}"+"Seconds\n"+" \t - Default Retries per Request: {2}\n", 
-                new Object[]{nroOfThreads, waitTime, defaultNroOfRetries});
+        logger.log(Level.INFO," >>> Starting Executor Component ...\n"+" \t - Thread Pool Size: {0}" + "\n"
+               + " \t - Interval: {1}"+"Seconds\n"+" \t - Retries per Request: {2}\n", 
+                new Object[]{threadPoolSize, interval, retries});
         
-        scheduler = Executors.newScheduledThreadPool(nroOfThreads);
-        handle = scheduler.scheduleAtFixedRate(task, 2, waitTime, TimeUnit.SECONDS);
+        scheduler = Executors.newScheduledThreadPool(threadPoolSize);
+        handle = scheduler.scheduleAtFixedRate(task, 2, interval, TimeUnit.SECONDS);
     }
     
     public Long scheduleRequest(String commandId, CommandContext ctx) {
@@ -98,7 +98,7 @@ public class ExecutorImpl implements Executor {
         if (ctx.getData("retries") != null) {
             requestInfo.setRetries((Integer) ctx.getData("retries"));
         } else {
-            requestInfo.setRetries(defaultNroOfRetries);
+            requestInfo.setRetries(retries);
         }
         if (ctx != null) {
             try {
@@ -116,7 +116,7 @@ public class ExecutorImpl implements Executor {
         em.persist(requestInfo);
         
         
-        logger.info(" >>> Scheduling request for Command: " + commandId + " - requestId: " + requestInfo.getId() + " with " + requestInfo.getRetries() + " retries");
+        logger.log(Level.INFO, " >>> Scheduling request for Command: {0} - requestId: {1} with {2} retries", new Object[]{commandId, requestInfo.getId(), requestInfo.getRetries()});
         return requestInfo.getId();
     }
     
