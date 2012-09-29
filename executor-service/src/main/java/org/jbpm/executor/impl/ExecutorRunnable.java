@@ -157,7 +157,7 @@ public class ExecutorRunnable implements Runnable {
             if (!callbackCache.containsKey(name)) {
                 Set<Bean<?>> beans = beanManager.getBeans(name);
                 Bean<?> bean = beans.iterator().next();
-                callbackCache.put(name, (CommandCallback) beanManager.getReference(bean, Command.class, beanManager.createCreationalContext(bean)));
+                callbackCache.put(name, (CommandCallback) beanManager.getReference(bean, CommandCallback.class, beanManager.createCreationalContext(bean)));
             }
         }
         
