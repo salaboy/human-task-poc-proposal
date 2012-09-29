@@ -15,9 +15,8 @@ public class SimpleIncrementCallback implements CommandCallback {
 
     public void onCommandDone(CommandContext ctx, ExecutionResults results) {
         String businessKey = (String) ctx.getData("businessKey");
-        AtomicLong increment = (AtomicLong) BasicExecutorBaseTest.cachedEntities.get(businessKey);
-        System.out.println(" >>> Before Incrementing = " + increment);
-        BasicExecutorBaseTest.cachedEntities.put(businessKey, new AtomicLong(increment.incrementAndGet()));
+        System.out.println(" >>> Before Incrementing = " + ((AtomicLong) BasicExecutorBaseTest.cachedEntities.get(businessKey)).get());
+        ((AtomicLong) BasicExecutorBaseTest.cachedEntities.get(businessKey)).incrementAndGet();
         System.out.println(" >>> After Incrementing = " + BasicExecutorBaseTest.cachedEntities.get(businessKey));
 
     }
