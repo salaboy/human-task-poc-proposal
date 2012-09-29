@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -33,7 +35,8 @@ import org.jbpm.executor.entities.STATUS;
  * @author salaboy
  */
 public class ExecutorRunnable implements Runnable {
-
+    @Inject 
+    private Logger logger;
     @Inject
     private EntityManager em;
     @Inject
@@ -44,9 +47,9 @@ public class ExecutorRunnable implements Runnable {
 
     @Transactional
     public void run() {
-        System.out.println(System.currentTimeMillis() + " >>> Waking Up!!!");
+        logger.log(Level.INFO, " >>> Executor Thread {0} Waking Up!!!", this.toString());
         List<?> resultList = em.createQuery("Select r from RequestInfo as r where r.status ='QUEUED' or r.status = 'RETRYING' ORDER BY r.time DESC").getResultList();
-        System.out.println(" XXXXXXXX >>> Number of request pending for execution = " + resultList.size());
+        logger.log(Level.INFO, " >>> Pending Requests = {0}", resultList.size());
         if (resultList.size() > 0) {
             RequestInfo r = null;
             Throwable exception = null;
@@ -54,9 +57,9 @@ public class ExecutorRunnable implements Runnable {
                 r = (RequestInfo) resultList.get(0);
                 r.setStatus(STATUS.RUNNING);
                 em.merge(r);
-                System.out.println(" >> Processing Request Id: " + r.getId());
-                System.out.println(" >> Request Status =" + r.getStatus());
-                System.out.println(" >> Command Name to execute = " + r.getCommandName());
+                logger.log(Level.INFO, " >> Processing Request Id: {0}", r.getId());
+                logger.log(Level.INFO, " >> Request Status ={0}", r.getStatus());
+                logger.log(Level.INFO, " >> Command Name to execute = {0}", r.getCommandName());
 
 
                 Command cmd = this.findCommand(r.getCommandName());
@@ -74,7 +77,7 @@ public class ExecutorRunnable implements Runnable {
                 }
                 ExecutionResults results = cmd.execute(ctx);
                 if (ctx != null && ctx.getData("callbacks") != null) {
-                    System.out.println(" ### Callback: " + ctx.getData("callbacks"));
+                    logger.log(Level.INFO, " ### Callback: {0}", ctx.getData("callbacks"));
                     String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");;
                     List<String> callbacks = (List<String>) Arrays.asList(callbacksArray);
                     for (String callbackName : callbacks) {
@@ -82,7 +85,7 @@ public class ExecutorRunnable implements Runnable {
                         handler.onCommandDone(ctx, results);
                     }
                 } else {
-                    System.out.println(" ### Callbacks: NULL");
+                    logger.info(" ### Callbacks: NULL");
                 }
                 if (results != null) {
                     try {
@@ -101,21 +104,21 @@ public class ExecutorRunnable implements Runnable {
                 exception = e;
             }
             if (exception != null) {
-                System.out.println(System.currentTimeMillis() + " XXXXX >>> Before - Error Found!!!" + exception.getMessage());
+                logger.log(Level.SEVERE, "{0} >>> Before - Error Handling!!!{1}", new Object[]{System.currentTimeMillis(), exception.getMessage()});
 
 
 
                 ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), ExceptionUtils.getFullStackTrace(exception.fillInStackTrace()));
                 errorInfo.setRequestInfo(r);
                 r.getErrorInfo().add(errorInfo);
-                System.out.println(" >>> Number of Error: " + r.getErrorInfo().size());
+                logger.log(Level.SEVERE, " >>> Error Number: {0}", r.getErrorInfo().size());
                 if (r.getRetries() > 0) {
                     r.setStatus(STATUS.RETRYING);
                     r.setRetries(r.getRetries() - 1);
                     r.setExecutions(r.getExecutions() + 1);
-                    System.out.println(System.currentTimeMillis() + " >>> Retrying (" + r.getRetries() + ") still available!");
+                    logger.log(Level.SEVERE, " >>> Retrying ({0}) still available!", r.getRetries());
                 } else {
-                    System.out.println(System.currentTimeMillis() + " >>> Error no retries left!");
+                    logger.severe(" >>> Error no retries left!");
                     r.setStatus(STATUS.ERROR);
                     r.setExecutions(r.getExecutions() + 1);
                 }
@@ -123,7 +126,7 @@ public class ExecutorRunnable implements Runnable {
                 em.merge(r);
 
 
-                System.out.println(System.currentTimeMillis() + " >>> XXXXXXX After - Error Found!!!" + exception.getMessage());
+                logger.severe(" >>> XXXXXXX After - Error Handling!!!");
 
 
             } else {

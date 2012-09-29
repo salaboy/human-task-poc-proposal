@@ -38,23 +38,15 @@ public abstract class BasicExecutorBaseTest {
 
     public static Map<String, Object> cachedEntities = new HashMap<String, Object>();
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
+        executor.init();
     }
 
     @After
     public void tearDown() {
         adminService.clearAllRequests();
         adminService.clearAllErrors();
-        
         executor.destroy();
     }
     

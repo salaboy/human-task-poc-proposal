@@ -16,7 +16,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -31,7 +32,8 @@ import org.jboss.seam.transaction.Transactional;
 @Transactional
 public class ExecutorImpl implements Executor {
     
-    private int waitTime = 3;
+    @Inject
+    private Logger logger;
     @Inject    
     private EntityManager em;
     @Inject
@@ -40,7 +42,9 @@ public class ExecutorImpl implements Executor {
     private ScheduledFuture<?> handle;
     private int nroOfThreads = 1;
     private int defaultNroOfRetries = 3;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nroOfThreads);
+    private int waitTime = 3;
+    
+    private ScheduledExecutorService scheduler;
     
     public ExecutorImpl() {
     }
@@ -69,13 +73,15 @@ public class ExecutorImpl implements Executor {
         this.nroOfThreads = nroOfThreads;
     }
     
-    @PostConstruct
+    
     public void init() {
-        final int THREAD_COUNT = nroOfThreads;
-        System.out.println(" XXXXXXXX >>> Starting Executor Component with Thread Pool Size: " + THREAD_COUNT);
+        
+        logger.log(Level.INFO," >>> Starting Executor Component ...\n"+" \t - Nro Of Threads: {0}" + "\n"
+               + " \t - Interval: {1}"+"Seconds\n"+" \t - Default Retries per Request: {2}\n", 
+                new Object[]{nroOfThreads, waitTime, defaultNroOfRetries});
+        
+        scheduler = Executors.newScheduledThreadPool(nroOfThreads);
         handle = scheduler.scheduleAtFixedRate(task, 2, waitTime, TimeUnit.SECONDS);
-        
-        
     }
     
     public Long scheduleRequest(String commandId, CommandContext ctx) {
@@ -110,14 +116,13 @@ public class ExecutorImpl implements Executor {
         em.persist(requestInfo);
         
         
-        System.out.println(" >>> Scheduling request for Command: " + commandId + " - requestId: " + requestInfo.getId() + " with " + requestInfo.getRetries() + " retries");
+        logger.info(" >>> Scheduling request for Command: " + commandId + " - requestId: " + requestInfo.getId() + " with " + requestInfo.getRetries() + " retries");
         return requestInfo.getId();
     }
     
     public void cancelRequest(Long requestId) {
-        System.out.println(" >>> Before - Cancelling Request with Id: " + requestId);
-        
-        
+        logger.log(Level.INFO, " >>> Before - Cancelling Request with Id: {0}", requestId);
+
         String eql = "Select r from RequestInfo as r where (r.status ='QUEUED' or r.status ='RETRYING') and id = :id";
         List<?> result = em.createQuery(eql).setParameter("id", requestId).getResultList();
         if (result.isEmpty()) {
@@ -130,11 +135,11 @@ public class ExecutorImpl implements Executor {
         r.setStatus(STATUS.CANCELLED);
         em.merge(r);
         
-        System.out.println(" >>> After - Cancelling Request with Id: " + requestId);
+        logger.log(Level.INFO, " >>> After - Cancelling Request with Id: {0}", requestId);
     }
     
     public void destroy() {
-        System.out.println(" >>>>> Destroying Executor!!!!");
+        logger.info(" >>>>> Destroying Executor !!!");
         handle.cancel(true);
         if (scheduler != null) {
             scheduler.shutdownNow();

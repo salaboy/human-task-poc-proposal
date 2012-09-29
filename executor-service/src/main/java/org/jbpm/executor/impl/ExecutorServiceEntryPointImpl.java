@@ -102,6 +102,30 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
     public void destroy() {
         executor.destroy();
     }
+
+    public int getWaitTime() {
+        return executor.getWaitTime();
+    }
+
+    public void setWaitTime(int waitTime) {
+        executor.setWaitTime(waitTime);
+    }
+
+    public int getDefaultNroOfRetries() {
+        return executor.getDefaultNroOfRetries();
+    }
+
+    public void setDefaultNroOfRetries(int defaultNroOfRetries) {
+        executor.setDefaultNroOfRetries(defaultNroOfRetries);
+    }
+
+    public int getNroOfThreads() {
+        return executor.getNroOfThreads();
+    }
+
+    public void setNroOfThreads(int nroOfThreads) {
+        executor.setNroOfThreads(nroOfThreads);
+    }
     
     
     

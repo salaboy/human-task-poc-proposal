@@ -48,11 +48,15 @@ public class NoCDIExecutorTest {
 
         
         ExecutorServiceEntryPoint executor = ExecutorModule.getInstance().getExecutorServiceEntryPoint();
+        executor.setNroOfThreads(1);
+        executor.setWaitTime(3);
+        executor.init();
         
+
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         
-        executor.scheduleRequest(PrintOutCommand.class.getCanonicalName(), ctxCMD);
+        executor.scheduleRequest("PrintOutCmd", ctxCMD);
         
         Thread.sleep(10000);
         
