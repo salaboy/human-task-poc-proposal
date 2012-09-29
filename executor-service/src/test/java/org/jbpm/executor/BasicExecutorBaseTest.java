@@ -43,7 +43,7 @@ public abstract class BasicExecutorBaseTest {
     }
 
     @Test
-    public void correctExcecutionTest() throws InterruptedException {
+    public void simpleExcecutionTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
