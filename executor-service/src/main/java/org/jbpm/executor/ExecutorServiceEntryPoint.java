@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor;
 
+import java.util.Date;
 import java.util.List;
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.entities.ErrorInfo;
@@ -17,7 +18,7 @@ public interface ExecutorServiceEntryPoint {
 
     public List<RequestInfo> getQueuedRequests();
 
-    public List<RequestInfo> getExecutedRequests();
+    public List<RequestInfo> getCompletedRequests();
 
     public List<RequestInfo> getInErrorRequests();
 
@@ -50,4 +51,14 @@ public interface ExecutorServiceEntryPoint {
     public int getThreadPoolSize();
 
     public void setThreadPoolSize(int nroOfThreads);
+    
+    public List<RequestInfo> getPendingRequests();
+
+    public List<RequestInfo> getPendingRequestById(Long id);
+
+    public Long scheduleRequest(String commandId, Date date, CommandContext ctx);
+
+    public List<RequestInfo> getRunningRequests();
+    
+    public List<RequestInfo> getFutureQueuedRequests();
 }

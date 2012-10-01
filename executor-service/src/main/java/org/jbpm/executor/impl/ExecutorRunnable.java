@@ -16,16 +16,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.executor.annotations.Completed;
+import org.jbpm.executor.annotations.OnError;
+import org.jbpm.executor.annotations.Running;
 import org.jbpm.executor.api.Command;
 import org.jbpm.executor.api.CommandCallback;
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.api.ExecutionResults;
+import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.entities.STATUS;
@@ -41,6 +47,12 @@ public class ExecutorRunnable implements Runnable {
     private EntityManager em;
     @Inject
     private BeanManager beanManager;
+    @Inject
+    private Event<RequestInfo> requestEvents;
+    @Inject
+    private Event<ErrorInfo> errorEvents;
+    @Inject 
+    private ExecutorQueryService queryService;
     
     private final Map<String, Command> commandCache = new HashMap<String, Command>();
     private final Map<String, CommandCallback> callbackCache = new HashMap<String, CommandCallback>();
@@ -48,7 +60,7 @@ public class ExecutorRunnable implements Runnable {
     @Transactional
     public void run() {
         logger.log(Level.INFO, " >>> Executor Thread {0} Waking Up!!!", this.toString());
-        List<?> resultList = em.createQuery("Select r from RequestInfo as r where r.status ='QUEUED' or r.status = 'RETRYING' ORDER BY r.time DESC").getResultList();
+        List<?> resultList = queryService.getPendingRequests();
         logger.log(Level.INFO, " >>> Pending Requests = {0}", resultList.size());
         if (resultList.size() > 0) {
             RequestInfo r = null;
@@ -57,6 +69,7 @@ public class ExecutorRunnable implements Runnable {
                 r = (RequestInfo) resultList.get(0);
                 r.setStatus(STATUS.RUNNING);
                 em.merge(r);
+                requestEvents.select(new AnnotationLiteral<Running>(){}).fire(r);
                 logger.log(Level.INFO, " >> Processing Request Id: {0}", r.getId());
                 logger.log(Level.INFO, " >> Request Status ={0}", r.getStatus());
                 logger.log(Level.INFO, " >> Command Name to execute = {0}", r.getCommandName());
@@ -105,11 +118,13 @@ public class ExecutorRunnable implements Runnable {
             }
             if (exception != null) {
                 logger.log(Level.SEVERE, "{0} >>> Before - Error Handling!!!{1}", new Object[]{System.currentTimeMillis(), exception.getMessage()});
+                
 
-
-
+                
                 ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), ExceptionUtils.getFullStackTrace(exception.fillInStackTrace()));
                 errorInfo.setRequestInfo(r);
+                requestEvents.select(new AnnotationLiteral<OnError>(){}).fire(r);
+                errorEvents.select(new AnnotationLiteral<OnError>(){}).fire(errorInfo);
                 r.getErrorInfo().add(errorInfo);
                 logger.log(Level.SEVERE, " >>> Error Number: {0}", r.getErrorInfo().size());
                 if (r.getRetries() > 0) {
@@ -130,10 +145,10 @@ public class ExecutorRunnable implements Runnable {
 
 
             } else {
-
+                
                 r.setStatus(STATUS.DONE);
                 em.merge(r);
-
+                requestEvents.select(new AnnotationLiteral<Completed>(){}).fire(r);
             }
         }
     }

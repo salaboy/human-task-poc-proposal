@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public abstract class BasicExecutorBaseTest {
     @Inject
     protected ExecutorServiceEntryPoint executor;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
-
+    
     @Before
     public void setUp() {
         executor.setThreadPoolSize(1);
@@ -55,7 +56,7 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(0, inErrorRequests.size());
         List<RequestInfo> queuedRequests = executor.getQueuedRequests();
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executor.getExecutedRequests();
+        List<RequestInfo> executedRequests = executor.getCompletedRequests();
         assertEquals(1, executedRequests.size());
 
 
@@ -77,7 +78,7 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(0, inErrorRequests.size());
         List<RequestInfo> queuedRequests = executor.getQueuedRequests();
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executor.getExecutedRequests();
+        List<RequestInfo> executedRequests = executor.getCompletedRequests();
         assertEquals(1, executedRequests.size());
 
         assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
@@ -148,4 +149,26 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(1, cancelledRequests.size());
 
     }
+    
+    @Test
+    public void futureRequestTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        Long requestId = executor.scheduleRequest("PrintOutCmd", new Date(new Date().getTime() + 10000), ctxCMD);
+        
+        Thread.sleep(5000);
+        
+        List<RequestInfo> runningRequests = executor.getRunningRequests();
+        assertEquals(0, runningRequests.size());
+        
+        List<RequestInfo> futureQueuedRequests = executor.getFutureQueuedRequests();
+        assertEquals(1, futureQueuedRequests.size());
+        
+        Thread.sleep(10000);
+        
+        List<RequestInfo> completedRequests = executor.getCompletedRequests();
+        assertEquals(1, completedRequests.size());
+    }
+    
 }

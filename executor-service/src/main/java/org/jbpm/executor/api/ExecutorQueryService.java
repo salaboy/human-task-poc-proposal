@@ -13,10 +13,14 @@ import org.jbpm.executor.entities.RequestInfo;
  * @author salaboy
  */
 public interface ExecutorQueryService {
+    List<RequestInfo> getPendingRequests();
+    List<RequestInfo> getPendingRequestById(Long id);
     List<RequestInfo> getQueuedRequests();
-    List<RequestInfo> getExecutedRequests();
+    List<RequestInfo> getCompletedRequests();
     List<RequestInfo> getInErrorRequests();
     List<RequestInfo> getCancelledRequests();
     List<ErrorInfo> getAllErrors(); 
     List<RequestInfo> getAllRequests(); 
+    List<RequestInfo> getRunningRequests();
+    List<RequestInfo> getFutureQueuedRequests();
 }

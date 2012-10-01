@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor.impl;
 
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import org.jbpm.executor.ExecutorServiceEntryPoint;
@@ -53,14 +54,16 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
         this.adminService = adminService;
     }
     
-    
+    public List<RequestInfo> getFutureQueuedRequests() {
+        return queryService.getFutureQueuedRequests();
+    }
 
     public List<RequestInfo> getQueuedRequests() {
         return queryService.getQueuedRequests();
     }
 
-    public List<RequestInfo> getExecutedRequests() {
-        return queryService.getExecutedRequests();
+    public List<RequestInfo> getCompletedRequests() {
+        return queryService.getCompletedRequests();
     }
 
     public List<RequestInfo> getInErrorRequests() {
@@ -126,6 +129,23 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
     public void setThreadPoolSize(int nroOfThreads) {
         executor.setThreadPoolSize(nroOfThreads);
     }
+
+    public List<RequestInfo> getPendingRequests() {
+        return queryService.getPendingRequests();
+    }
+
+    public List<RequestInfo> getPendingRequestById(Long id) {
+        return queryService.getPendingRequestById(id);
+    }
+
+    public Long scheduleRequest(String commandId, Date date, CommandContext ctx) {
+        return executor.scheduleRequest(commandId, date, ctx);
+    }
+
+    public List<RequestInfo> getRunningRequests() {
+        return queryService.getRunningRequests();
+    }
+    
     
     
     

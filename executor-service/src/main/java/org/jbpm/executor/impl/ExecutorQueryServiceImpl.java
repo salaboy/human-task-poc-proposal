@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor.impl;
 
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -17,20 +18,39 @@ import org.jboss.seam.transaction.Transactional;
  * @author salaboy
  */
 @Transactional
-public class ExecutorQueryServiceImpl implements ExecutorQueryService{
-    @Inject 
+public class ExecutorQueryServiceImpl implements ExecutorQueryService {
+
+    @Inject
     private EntityManager em;
 
     public ExecutorQueryServiceImpl() {
     }
-    
+
+    public List<RequestInfo> getPendingRequests() {
+        List resultList = em.createNamedQuery("PendingRequests").setParameter("now", new Date()).getResultList();
+        return resultList;
+    }
+    public List<RequestInfo> getPendingRequestById(Long id) {
+        List resultList = em.createNamedQuery("PendingRequestById").setParameter("id", id).getResultList();
+        return resultList;
+    }
+    public List<RequestInfo> getRunningRequests() {
+        List resultList = em.createNamedQuery("RunningRequests").getResultList();
+        return resultList;
+    }
+
     public List<RequestInfo> getQueuedRequests() {
         List resultList = em.createNamedQuery("QueuedRequests").getResultList();
         return resultList;
     }
+    
+    public List<RequestInfo> getFutureQueuedRequests() {
+        List resultList = em.createNamedQuery("FutureQueuedRequests").setParameter("now", new Date()).getResultList();
+        return resultList;
+    }
 
-    public List<RequestInfo> getExecutedRequests() {
-        List resultList = em.createNamedQuery("ExecutedRequests").getResultList();
+    public List<RequestInfo> getCompletedRequests() {
+        List resultList = em.createNamedQuery("CompletedRequests").getResultList();
         return resultList;
     }
 
@@ -48,7 +68,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService{
         List resultList = em.createNamedQuery("GetAllErrors").getResultList();
         return resultList;
     }
-    
+
     public List<RequestInfo> getAllRequests() {
         List resultList = em.createNamedQuery("GetAllRequests").getResultList();
         return resultList;

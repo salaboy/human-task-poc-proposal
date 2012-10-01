@@ -1,5 +1,7 @@
 package org.jbpm.executor.api;
 
+import java.util.Date;
+
 /**
  *
  * @author salaboy
@@ -7,6 +9,8 @@ package org.jbpm.executor.api;
 public interface Executor extends Service {
 
     public Long scheduleRequest(String commandName, CommandContext ctx);
+    
+    public Long scheduleRequest(String commandId, Date date, CommandContext ctx);
 
     public void cancelRequest(Long requestId);
 
@@ -21,4 +25,6 @@ public interface Executor extends Service {
     public int getThreadPoolSize();
 
     public void setThreadPoolSize(int nroOfThreads);
+    
+    
 }
